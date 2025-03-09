@@ -1,15 +1,17 @@
-import { RESTAURANT_RULES } from "../../../constants/rules.js";
 import FormFieldContainer from "./FormFieldContainer.js";
 
-const RestaurantName = () => {
-  const { MIN_RESTAURANT_NAME, MAX_RESTAURANT_NAME } = RESTAURANT_RULES;
+export const NAME_LENGTH = Object.freeze({
+  MIN: 1,
+  MAX: 15,
+});
 
+const RestaurantName = () => {
   const label = "이름";
   const name = "name";
   const required = true;
 
   const contents = /*html*/ `
-    <input type="text" name="name" id="name" required minlength="${MIN_RESTAURANT_NAME}" maxlength="${MAX_RESTAURANT_NAME}" data-testid="restaurant-name"/>
+    <input type="text" name="name" id="name" required minlength="${NAME_LENGTH.MIN}" maxlength="${NAME_LENGTH.MAX}" data-testid="restaurant-name"/>
   `;
 
   return FormFieldContainer({ contents, required, label, name });
