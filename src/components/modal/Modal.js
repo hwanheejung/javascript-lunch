@@ -7,14 +7,13 @@ class Modal extends Component {
     };
     this.watchState("isOpen", () => this.initialRender());
 
-    this.handleOpen = this.open.bind(this);
-    this.handleClose = this.close.bind(this);
-
     this.eventBindings.push({
       action: "close-modal",
       eventType: "click",
       handler: () => this.close(),
     });
+
+    this.handleOpen = () => this.open();
   }
 
   contents() {
