@@ -6,15 +6,16 @@ export const NAME_LENGTH = Object.freeze({
 });
 
 const RestaurantName = () => {
-  const label = "이름";
-  const name = "name";
-  const required = true;
-
   const contents = /*html*/ `
     <input type="text" name="name" id="name" required minlength="${NAME_LENGTH.MIN}" maxlength="${NAME_LENGTH.MAX}" data-testid="restaurant-name"/>
   `;
 
-  return FormFieldContainer({ contents, required, label, name });
+  return FormFieldContainer({
+    contents,
+    required: true,
+    label: "이름",
+    name: "name",
+  });
 };
 
 export default RestaurantName;

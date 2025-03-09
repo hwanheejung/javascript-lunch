@@ -10,10 +10,6 @@ export const CATEGORIES = Object.freeze([
 ]);
 
 const Category = () => {
-  const label = "카테고리";
-  const name = "category";
-  const required = true;
-
   const contents = /*html*/ `
     <select name="category" id="category" required data-testid="category">
       <option value="">선택해 주세요</option>
@@ -23,7 +19,12 @@ const Category = () => {
     </select>
   `;
 
-  return FormFieldContainer({ contents, required, label, name });
+  return FormFieldContainer({
+    contents,
+    required: true,
+    label: "카테고리",
+    name: "category",
+  });
 };
 
 export default Category;

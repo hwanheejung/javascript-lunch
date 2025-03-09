@@ -1,4 +1,4 @@
-const FormFieldContainer = ({ contents, required, label, name }) => {
+const FormFieldContainer = ({ contents, required = false, label, name }) => {
   return /* html */ `
     <div class="form-item ${required ? "form-item--required" : ""}">
       <label for="${name}" class="text-caption">${label}</label>
