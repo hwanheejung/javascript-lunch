@@ -9,18 +9,16 @@ class Modal extends Component {
 
     this.handleOpen = this.open.bind(this);
     this.handleClose = this.close.bind(this);
+
+    this.eventBindings.push({
+      action: "close-modal",
+      eventType: "click",
+      handler: () => this.close(),
+    });
   }
 
   contents() {
     return "";
-  }
-
-  componentDidMount() {
-    this.$backdrop = this.$target.querySelector(".modal-backdrop");
-    if (this.$backdrop) {
-      this.$backdrop.removeEventListener("click", this.handleClose);
-      this.$backdrop.addEventListener("click", this.handleClose);
-    }
   }
 
   setupTriggerButtons(selectors = []) {
@@ -41,7 +39,7 @@ class Modal extends Component {
     if (!this.state.isOpen) return "";
     return /* html */ `
       <div class="modal" data-testid="modal">
-        <div class="modal-backdrop" data-testid="modal-backdrop"></div>
+        <div class="modal-backdrop" data-action="close-modal" data-testid="modal-backdrop"></div>
         <div id="modal-container" class="modal-container">
           ${this.contents()}
         </div>

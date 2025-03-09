@@ -35,7 +35,7 @@ class App extends Component {
 
   renderModal() {
     const $modal = new AddRestaurantModal(document.querySelector("#modal"), {
-      submit: this.updateRestaurant.bind(this),
+      submit: (newRestaurant) => this.updateRestaurant(newRestaurant),
     });
   }
 

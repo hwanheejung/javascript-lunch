@@ -4,6 +4,7 @@ class Component {
   state = {};
   #changedKeys = new Set();
   #stateToUIMap = {};
+  eventBindings = [];
 
   constructor($target, props) {
     this.$target = $target;
@@ -11,6 +12,7 @@ class Component {
 
     this.setup();
     this.initialRender();
+    this.#bindEvents();
   }
 
   setup() {}
@@ -42,6 +44,18 @@ class Component {
   /** 상태 변경 감시 */
   watchState(stateKey, callback) {
     this.#stateToUIMap[stateKey] = callback;
+  }
+
+  #bindEvents() {
+    if (!this.eventBindings.length) return;
+
+    this.eventBindings.forEach(({ action, eventType, handler }) => {
+      this.$target.addEventListener(eventType, (event) => {
+        if (event.target.dataset.action === action) {
+          handler(event);
+        }
+      });
+    });
   }
 
   render() {
