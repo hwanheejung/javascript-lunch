@@ -1,14 +1,10 @@
 import Modal from "../Modal.js";
 import Category from "./Category.js";
-import RestaurantName from "./RestaurantName.js";
-import Distance from "./Distance.js";
 import Description from "./Description.js";
+import Distance from "./Distance.js";
 import Link from "./Link.js";
-import validateCategory from "../../../validators/validateCategory.js";
-import validateRestaurantName from "../../../validators/validateRestaurantName.js";
-import validateDistance from "../../../validators/validateDistance.js";
-import validateDescription from "../../../validators/validateDescription.js";
-import validateLink from "../../../validators/validateLink.js";
+import RestaurantName from "./RestaurantName.js";
+import validateRestaurantForm from "../../../validators/validateRestaurantForm.js";
 
 class AddRestaurantModal extends Modal {
   setup() {
@@ -42,22 +38,13 @@ class AddRestaurantModal extends Modal {
       const formData = new FormData(event.target);
       const data = Object.fromEntries(formData.entries());
 
-      this.validateData(data);
+      this.validateRestaurantForm(data);
       this.props.submit(data);
       this.close();
     } catch (error) {
       alert(error.message);
     }
   };
-
-  validateData(data) {
-    const { category, name, distance, description, link } = data;
-    validateCategory(category);
-    validateRestaurantName(name);
-    validateDistance(distance);
-    validateDescription(description);
-    validateLink(link);
-  }
 
   contents() {
     return /*html */ `
