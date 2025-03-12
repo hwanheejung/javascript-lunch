@@ -1,9 +1,9 @@
 import FormFieldContainer from "./FormFieldContainer.js";
 
-export const NAME_LENGTH = Object.freeze({
+export const NAME_LENGTH = {
   MIN: 1,
   MAX: 15,
-});
+} as const;
 
 const RestaurantName = () => {
   const contents = /*html*/ `

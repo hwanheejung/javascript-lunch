@@ -1,20 +1,23 @@
-import image from "../public/icons/favorite-icon-filled.png";
+import { Restaurant } from "../types/restaurant.js";
 import Header from "./components/Header.js";
 import RestaurantList from "./components/RestaurantList.js";
-import { restaurants } from "./database/restaurants.js";
-import AddRestaurantModal from "./components/modal/AddRestaurantModal/index.js";
-import Modal from "./components/modal/Modal.js";
 import Component from "./components/core/Component.js";
+import AddRestaurantModal from "./components/modal/AddRestaurantModal/index.js";
+import { restaurants } from "./database/restaurants.js";
 
-class App extends Component {
-  setup() {
+interface AppState {
+  restaurants: Restaurant[];
+}
+
+class App extends Component<AppState> {
+  protected setup(): void {
     this.state = {
       restaurants: restaurants,
     };
     this.watchState("restaurants", () => this.renderRestaurantList());
   }
 
-  updateRestaurant(newRestaurant) {
+  updateRestaurant(newRestaurant: Restaurant) {
     this.setState({
       restaurants: [...this.state.restaurants, newRestaurant],
     });
@@ -28,22 +31,27 @@ class App extends Component {
     `;
   }
 
-  componentDidMount() {
+  protected componentDidMount() {
     this.renderModal();
     this.renderRestaurantList();
   }
 
   renderModal() {
-    const $modal = new AddRestaurantModal(document.querySelector("#modal"), {
-      submit: (newRestaurant) => this.updateRestaurant(newRestaurant),
-    });
+    const $modal = document.querySelector("#modal");
+
+    if ($modal instanceof HTMLElement) {
+      new AddRestaurantModal($modal, {
+        submit: (newRestaurant: Restaurant) =>
+          this.updateRestaurant(newRestaurant),
+      });
+    }
   }
 
   renderRestaurantList() {
     const $main = document.querySelector("main");
 
-    $main.replaceChildren();
-    $main.insertAdjacentHTML(
+    $main?.replaceChildren();
+    $main?.insertAdjacentHTML(
       "afterbegin",
       RestaurantList(this.state.restaurants)
     );
@@ -51,4 +59,4 @@ class App extends Component {
 }
 
 const app = document.querySelector("#app");
-new App(app);
+if (app instanceof HTMLElement) new App(app);

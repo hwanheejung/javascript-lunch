@@ -1,6 +1,6 @@
 import FormFieldContainer from "./FormFieldContainer.js";
 
-export const DISTANCES = Object.freeze([5, 10, 15, 20, 30]);
+export const DISTANCES = [5, 10, 15, 20, 30] as const;
 
 const Distance = () => {
   const contents = /* html */ `

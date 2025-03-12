@@ -1,6 +1,14 @@
 import Component from "../core/Component.js";
 
-class Modal extends Component {
+interface ModalState {
+  isOpen: boolean;
+}
+
+class Modal extends Component<ModalState> {
+  private handleOpen!: () => void;
+  private triggerSelectors: string[] = [];
+  private $triggerButtons: HTMLElement[] = [];
+
   setup() {
     this.state = {
       isOpen: false,
@@ -16,17 +24,18 @@ class Modal extends Component {
     this.handleOpen = () => this.open();
   }
 
-  contents() {
+  protected contents() {
     return "";
   }
 
-  setupTriggerButtons(selectors = []) {
+  protected setupTriggerButtons(selectors: string[] = []) {
     this.triggerSelectors = selectors;
     if (!this.triggerSelectors.length) return;
 
     this.$triggerButtons = this.triggerSelectors
       .map((selector) => Array.from(document.querySelectorAll(selector)))
-      .flat();
+      .flat()
+      .filter((el): el is HTMLElement => el instanceof HTMLElement); // true일 때 HTMLElement로 타입 단언
 
     this.$triggerButtons.forEach((button) => {
       button.removeEventListener("click", this.handleOpen);
@@ -34,7 +43,7 @@ class Modal extends Component {
     });
   }
 
-  template() {
+  protected template() {
     if (!this.state.isOpen) return "";
     return /* html */ `
       <div class="modal" data-testid="modal">
@@ -46,13 +55,13 @@ class Modal extends Component {
     `;
   }
 
-  open() {
+  protected open() {
     if (!this.state.isOpen) {
       this.setState({ isOpen: true });
     }
   }
 
-  close() {
+  protected close() {
     if (this.state.isOpen) {
       this.setState({ isOpen: false });
       this.$target.replaceChildren();

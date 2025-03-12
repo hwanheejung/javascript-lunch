@@ -1,13 +1,13 @@
 import FormFieldContainer from "./FormFieldContainer.js";
 
-export const CATEGORIES = Object.freeze([
+export const CATEGORIES = [
   "한식",
   "중식",
   "일식",
   "양식",
   "아시안",
   "기타",
-]);
+] as const;
 
 const Category = () => {
   const contents = /*html*/ `

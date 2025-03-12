@@ -1,3 +1,9 @@
+# UX
+
+- typescript
+- Modal animation
+- Pagination
+
 # E2E
 
 ## 고민
