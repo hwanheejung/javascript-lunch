@@ -1,12 +1,18 @@
+import { PropsType } from "../../../../types/common.js";
+import { Restaurant } from "../../../../types/restaurant.js";
+import validateRestaurantForm from "../../../validators/validateRestaurantForm.js";
 import Modal from "../Modal.js";
 import Category from "./Category.js";
 import Description from "./Description.js";
 import Distance from "./Distance.js";
 import Link from "./Link.js";
 import RestaurantName from "./RestaurantName.js";
-import validateRestaurantForm from "../../../validators/validateRestaurantForm.js";
 
-class AddRestaurantModal extends Modal {
+interface AddRestaurantModalProps extends PropsType {
+  submit: (newRestaurant: Restaurant) => void;
+}
+
+class AddRestaurantModal extends Modal<AddRestaurantModalProps> {
   setup() {
     super.setup();
     this.setupTriggerButtons([".gnb__button"]);
@@ -14,26 +20,41 @@ class AddRestaurantModal extends Modal {
     this.eventBindings.push({
       action: "submit-restaurant-form",
       eventType: "submit",
-      handler: (event) => this.handleSubmit(event),
+      handler: (event: Event) => this.handleSubmit(event),
     });
   }
 
-  handleSubmit = (event) => {
+  handleSubmit = (event: Event) => {
     event.preventDefault();
 
     try {
-      const formData = new FormData(event.target);
-      const data = Object.fromEntries(formData.entries());
+      const formData = new FormData(event.target as HTMLFormElement);
+      const rawData = Object.fromEntries(formData.entries());
+      const data = this.castFormDataToRestaurant(rawData);
 
       validateRestaurantForm(data);
       this.props.submit(data);
       this.close();
     } catch (error) {
-      alert(error.message);
+      if (error instanceof Error) alert(error.message);
     }
   };
 
-  contents() {
+  private castFormDataToRestaurant = (
+    data: Record<string, FormDataEntryValue>
+  ): Restaurant => {
+    return {
+      category: data.category as Restaurant["category"],
+      name: data.name as Restaurant["name"],
+      distance: parseInt(data.distance as string, 10) as Restaurant["distance"],
+      description: data.description
+        ? (data.description as Restaurant["description"])
+        : undefined,
+      link: data.link ? (data.link as Restaurant["link"]) : undefined,
+    };
+  };
+
+  protected contents() {
     return /*html */ `
       <h2 class="modal-title text-title">새로운 음식점</h2>
       <form id='submit-restaurant-form' data-action="submit-restaurant-form" data-testid='submit-restaurant-form'>

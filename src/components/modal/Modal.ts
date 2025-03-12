@@ -1,10 +1,14 @@
+import { PropsType, StateType } from "../../../types/common.js";
 import Component from "../core/Component.js";
 
-interface ModalState {
+interface ModalState extends StateType {
   isOpen: boolean;
 }
 
-class Modal extends Component<ModalState> {
+abstract class Modal<Props extends PropsType = {}> extends Component<
+  ModalState,
+  Props
+> {
   private handleOpen!: () => void;
   private triggerSelectors: string[] = [];
   private $triggerButtons: HTMLElement[] = [];
@@ -43,7 +47,7 @@ class Modal extends Component<ModalState> {
     });
   }
 
-  protected template() {
+  template() {
     if (!this.state.isOpen) return "";
     return /* html */ `
       <div class="modal" data-testid="modal">

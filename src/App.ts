@@ -1,3 +1,4 @@
+import { StateType } from "../types/common.js";
 import { Restaurant } from "../types/restaurant.js";
 import Header from "./components/Header.js";
 import RestaurantList from "./components/RestaurantList.js";
@@ -5,19 +6,19 @@ import Component from "./components/core/Component.js";
 import AddRestaurantModal from "./components/modal/AddRestaurantModal/index.js";
 import { restaurants } from "./database/restaurants.js";
 
-interface AppState {
+interface AppState extends StateType {
   restaurants: Restaurant[];
 }
 
 class App extends Component<AppState> {
-  protected setup(): void {
+  setup(): void {
     this.state = {
       restaurants: restaurants,
     };
     this.watchState("restaurants", () => this.renderRestaurantList());
   }
 
-  updateRestaurant(newRestaurant: Restaurant) {
+  private updateRestaurant(newRestaurant: Restaurant) {
     this.setState({
       restaurants: [...this.state.restaurants, newRestaurant],
     });
@@ -31,12 +32,12 @@ class App extends Component<AppState> {
     `;
   }
 
-  protected componentDidMount() {
+  componentDidMount() {
     this.renderModal();
     this.renderRestaurantList();
   }
 
-  renderModal() {
+  private renderModal() {
     const $modal = document.querySelector("#modal");
 
     if ($modal instanceof HTMLElement) {
@@ -47,7 +48,7 @@ class App extends Component<AppState> {
     }
   }
 
-  renderRestaurantList() {
+  private renderRestaurantList() {
     const $main = document.querySelector("main");
 
     $main?.replaceChildren();
