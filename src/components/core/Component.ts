@@ -1,6 +1,7 @@
-type StateKey<T> = keyof T;
+import { PropsType, StateType } from "../../../types/common";
+
+type StateKeyOf<T> = keyof T;
 type UIUpdateCallback = () => void;
-type AnyFunc = (...args: any[]) => any;
 
 interface EventBinding {
   action: string;
@@ -9,20 +10,20 @@ interface EventBinding {
 }
 
 abstract class Component<
-  State extends Record<string, any>,
-  Props extends Record<string, AnyFunc> = {}
+  State extends StateType,
+  Props extends PropsType = {}
 > {
   protected $target: HTMLElement;
   protected props: Props;
   protected state: State;
 
-  #changedKeys: Set<StateKey<State>> = new Set();
-  #stateToUIMap: Partial<Record<StateKey<State>, UIUpdateCallback>> = {};
+  #changedKeys: Set<StateKeyOf<State>> = new Set();
+  #stateToUIMap: Partial<Record<StateKeyOf<State>, UIUpdateCallback>> = {};
   protected eventBindings: EventBinding[] = [];
 
   constructor($target: HTMLElement, props?: Props) {
     this.$target = $target;
-    this.props = props ? props : ({} as Props);
+    this.props = (props ?? {}) as Props;
     this.state = {} as State;
 
     this.setup();
@@ -33,7 +34,7 @@ abstract class Component<
   protected setup(): void {}
 
   protected componentDidMount(): void {}
-  protected componentDidUpdate(changedKeys: StateKey<State>[]): void {
+  protected componentDidUpdate(changedKeys: StateKeyOf<State>[]): void {
     changedKeys.forEach((key) => {
       const callback = this.#stateToUIMap[key];
       if (callback) callback();
@@ -47,7 +48,7 @@ abstract class Component<
     // 변경된 state 키 찾기
     this.#changedKeys.clear();
 
-    Object.keys(newState).forEach((key) => {
+    (Object.keys(newState) as (keyof State)[]).forEach((key) => {
       if (prevState[key] !== newState[key]) {
         this.#changedKeys.add(key);
       }
@@ -58,7 +59,7 @@ abstract class Component<
 
   /** 상태 변경 감시 */
   protected watchState(
-    stateKey: StateKey<State>,
+    stateKey: StateKeyOf<State>,
     callback: UIUpdateCallback
   ): void {
     this.#stateToUIMap[stateKey] = callback;
@@ -67,8 +68,10 @@ abstract class Component<
   #bindEvents(): void {
     this.eventBindings.forEach(({ action, eventType, handler }) => {
       this.$target.addEventListener(eventType, (event) => {
-        const target = event.target as HTMLElement;
-        if (target.dataset.action === action) {
+        if (
+          event.target instanceof HTMLElement &&
+          event.target.dataset.action === action
+        ) {
           handler(event);
         }
       });
