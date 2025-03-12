@@ -1,7 +1,8 @@
+import { Restaurant } from "../../types/restaurant.js";
 import { NAME_LENGTH } from "../components/modal/AddRestaurantModal/RestaurantName.js";
 import throwError from "./throwError.js";
 
-const validateRestaurantName = (name) => {
+const validateRestaurantName = (name: Restaurant["name"]) => {
   throwError({
     condition:
       name.trim().length < NAME_LENGTH.MIN ||

@@ -1,7 +1,8 @@
+import { Restaurant } from "../../types/restaurant.js";
 import { CATEGORIES } from "../components/modal/AddRestaurantModal/Category.js";
 import throwError from "./throwError.js";
 
-const validateCategory = (category) => {
+const validateCategory = (category: Restaurant["category"]) => {
   throwError({
     condition: !category.trim(),
     message: "카테고리를 선택해주세요.",
