@@ -37,7 +37,18 @@ class RestaurantList extends Component<{}, RestaurantListProps> {
     <section class="restaurant-list-container" data-testid="restaurant-list">
       <ul class="restaurant-list">
         ${this.props.restaurants
-          .map((restaurant) => RestaurantItem(restaurant))
+          .map(
+            ({ id, category, name, distance, description }) => `
+            <li class="restaurant" data-id="${id}" data-action="select-restaurant">
+              ${RestaurantItem.CategoryIcon(category)}
+              <div class="restaurant__info">
+                ${RestaurantItem.Name(name)}
+                ${RestaurantItem.Distance(distance)}
+                ${RestaurantItem.Description(description)}
+              </div>
+            </li>
+          `
+          )
           .reverse()
           .join("")}
       </ul>

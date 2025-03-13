@@ -13,6 +13,11 @@
   border-bottom: 1px solid #e9eaed;
 }
 
+.restaurant.restaurant-detailModal {
+  flex-direction: column;
+  gap: 20px;
+}
+
 .restaurant__category {
   display: flex;
   justify-content: center;
