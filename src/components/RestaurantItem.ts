@@ -43,12 +43,25 @@ const Link = (link: Restaurant["link"]) => {
     : "";
 };
 
+const FavoriteButton = (id: Restaurant["id"], isFavorite: boolean) => {
+  const favoriteIcon = isFavorite
+    ? "favorite-icon-filled.png"
+    : "favorite-icon-lined.png";
+
+  return /* html */ `
+    <div class="restaurant__favorite-button" data-restaurant-id="${id}">
+      <img src="./icons/${favoriteIcon}" alt="즐겨찾기 아이콘" />
+    </div>
+  `;
+};
+
 const RestaurantItem = {
   CategoryIcon,
   Name,
   Distance,
   Description,
   Link,
+  FavoriteButton,
 };
 
 export default RestaurantItem;

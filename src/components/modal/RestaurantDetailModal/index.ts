@@ -6,6 +6,7 @@ import Modal from "../Modal.js";
 interface RestaurantDetailModalProps extends PropsType {
   restaurantId: Restaurant["id"];
   restaurants: Restaurant[];
+  isFavorite: boolean;
   delete: (id: Restaurant["id"]) => void;
 }
 
@@ -29,11 +30,14 @@ class RestaurantDetailModal extends Modal<RestaurantDetailModalProps> {
     const { restaurants, restaurantId } = this.props;
     const data = restaurants.find(({ id }) => id === restaurantId);
 
-    const { category, name, distance, description, link } = data!;
+    const { id, category, name, distance, description, link } = data!;
 
     return /* html */ `
         <div class="restaurant restaurant-detailModal">
-            ${RestaurantItem.CategoryIcon(category)}
+            <div style="display: flex; width: 100%; justify-content: space-between;">
+              ${RestaurantItem.CategoryIcon(category)}
+              ${RestaurantItem.FavoriteButton(id, this.props.isFavorite)}
+            </div>
             <div class="restaurant__info">
                 ${RestaurantItem.Name(name)}
                 ${RestaurantItem.Distance(distance)}

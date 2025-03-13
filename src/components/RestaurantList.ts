@@ -7,6 +7,7 @@ import RestaurantDetailModal from "./modal/RestaurantDetailModal/index.js";
 interface RestaurantListProps extends PropsType {
   restaurants: Restaurant[];
   deleteRestaurant: (id: Restaurant["id"]) => void;
+  favoriteIds: Restaurant["id"][];
 }
 
 class RestaurantList extends Component<{}, RestaurantListProps> {
@@ -23,9 +24,11 @@ class RestaurantList extends Component<{}, RestaurantListProps> {
     const $modal = document.querySelector("#modal");
 
     if ($li instanceof HTMLElement && $modal instanceof HTMLElement) {
+      const id = $li.dataset.id!;
       new RestaurantDetailModal($modal, {
-        restaurantId: $li.dataset.id!,
+        restaurantId: id,
         restaurants: this.props.restaurants,
+        isFavorite: this.props.favoriteIds.includes(id),
         delete: (id: Restaurant["id"]) => this.props.deleteRestaurant(id),
       }).open();
     }
@@ -45,6 +48,10 @@ class RestaurantList extends Component<{}, RestaurantListProps> {
                 ${RestaurantItem.Distance(distance)}
                 ${RestaurantItem.Description(description)}
               </div>
+              ${RestaurantItem.FavoriteButton(
+                id,
+                this.props.favoriteIds.includes(id)
+              )}
             </li>
           `
           )

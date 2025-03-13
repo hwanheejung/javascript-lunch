@@ -4,6 +4,7 @@ import Header from "../components/Header.js";
 import RestaurantList from "../components/RestaurantList.js";
 import Component from "../components/core/Component.js";
 import AddRestaurantModal from "../components/modal/AddRestaurantModal/index.js";
+import { favoriteIds } from "../database/favoriteIds.js";
 import { restaurants } from "../database/restaurants.js";
 import { CategoryKey, Restaurant, SortByKey } from "../entities/restaurant.js";
 import {
@@ -23,7 +24,7 @@ class App extends Component<AppState> {
   setup(): void {
     this.state = {
       restaurants: restaurants,
-      favoriteIds: [],
+      favoriteIds: favoriteIds,
       categoryFilter: "ALL",
       sortByFilter: "NAME",
     };
@@ -118,8 +119,31 @@ class App extends Component<AppState> {
       new RestaurantList($main, {
         restaurants: sortedData,
         deleteRestaurant: (id: Restaurant["id"]) => this.deleteRestaurant(id),
+        favoriteIds: this.state.favoriteIds,
       });
     }
+  }
+
+  private renderFavoriteStatesOnly() {
+    const { favoriteIds } = this.state;
+    document
+      .querySelectorAll("[data-restaurant-id]")
+      .forEach((item: Element) => {
+        const id = item.getAttribute("data-restaurant-id");
+        const icon = item.querySelector<HTMLImageElement>(".favorite-icon");
+
+        if (icon && id) {
+          const isFavorite = favoriteIds.includes(id);
+          icon.setAttribute(
+            "src",
+            `./icons/${
+              isFavorite
+                ? "favorite-icon-filled.png"
+                : "favorite-icon-lined.png"
+            }`
+          );
+        }
+      });
   }
 }
 
