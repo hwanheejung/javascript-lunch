@@ -51,11 +51,12 @@ class App extends Component<AppState> {
   private renderRestaurantList() {
     const $main = document.querySelector("main");
 
-    $main?.replaceChildren();
-    $main?.insertAdjacentHTML(
-      "afterbegin",
-      RestaurantList(this.state.restaurants)
-    );
+    if ($main instanceof HTMLElement) {
+      $main?.replaceChildren();
+      new RestaurantList($main, {
+        restaurants: this.state.restaurants,
+      });
+    }
   }
 }
 

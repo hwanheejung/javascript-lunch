@@ -9,30 +9,28 @@ const categoryImages: Record<Restaurant["category"], string> = {
   기타: "category-etc.png",
 };
 
-const RestaurantItem = ({
-  category,
-  name,
-  distance,
-  description,
-}: Omit<Restaurant, "link">) => {
+const RestaurantItem = (restaurant: Omit<Restaurant, "link">) => {
+  const { category, name, distance, description } = restaurant;
   return /* html */ `
-    <li class="restaurant">
-      <div class="restaurant__category">
-        <img src="./icons/${
-          categoryImages[category] || "category-etc.png"
-        }" alt="${category}" class="category-icon">
-      </div>
-      <div class="restaurant__info">
-        <h3 class="restaurant__name text-subtitle">${name}</h3>
-        <span class="restaurant__distance text-body">캠퍼스부터 ${distance}분 내</span>
-        ${
-          description
-            ? `<p class="restaurant__description text-body">${description}</p>`
-            : ""
-        }
-      </div>
-    </li>
-  `;
+      <li class="restaurant" data-id="${
+        restaurant.id
+      }" data-action="select-restaurant">
+        <div class="restaurant__category">
+          <img src="./icons/${
+            categoryImages[category] || "category-etc.png"
+          }" alt="${category}" class="category-icon">
+        </div>
+        <div class="restaurant__info">
+          <h3 class="restaurant__name text-subtitle">${name}</h3>
+          <span class="restaurant__distance text-body">캠퍼스부터 ${distance}분 내</span>
+          ${
+            description
+              ? `<p class="restaurant__description text-body">${description}</p>`
+              : ""
+          }
+        </div>
+      </li>
+      `;
 };
 
 export default RestaurantItem;

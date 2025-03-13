@@ -39,7 +39,7 @@ abstract class Modal<Props extends PropsType = {}> extends Component<
     this.$triggerButtons = this.triggerSelectors
       .map((selector) => Array.from(document.querySelectorAll(selector)))
       .flat()
-      .filter((el): el is HTMLElement => el instanceof HTMLElement); // true일 때 HTMLElement로 타입 단언
+      .filter((el): el is HTMLElement => el instanceof HTMLElement);
 
     this.$triggerButtons.forEach((button) => {
       button.removeEventListener("click", this.handleOpen);
@@ -59,7 +59,7 @@ abstract class Modal<Props extends PropsType = {}> extends Component<
     `;
   }
 
-  protected open() {
+  public open() {
     if (!this.state.isOpen) {
       this.setState({ isOpen: true });
     }

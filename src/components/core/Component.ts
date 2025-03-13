@@ -68,10 +68,12 @@ abstract class Component<
   #bindEvents(): void {
     this.eventBindings.forEach(({ action, eventType, handler }) => {
       this.$target.addEventListener(eventType, (event) => {
-        if (
-          event.target instanceof HTMLElement &&
-          event.target.dataset.action === action
-        ) {
+        const target = event.target as HTMLElement;
+        const actionElement = target.closest<HTMLElement>(
+          `[data-action="${action}"]`
+        );
+
+        if (actionElement && this.$target.contains(actionElement)) {
           handler(event);
         }
       });
@@ -79,7 +81,7 @@ abstract class Component<
   }
 
   protected render(): void {
-    this.$target.insertAdjacentHTML("afterbegin", this.template());
+    this.$target.innerHTML = this.template();
   }
 
   protected initialRender(): void {
