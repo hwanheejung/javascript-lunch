@@ -1,10 +1,11 @@
 import { StateType } from "../types/common.js";
-import { Restaurant } from "../types/restaurant.js";
+import Filter from "./components/Filter.js";
 import Header from "./components/Header.js";
 import RestaurantList from "./components/RestaurantList.js";
 import Component from "./components/core/Component.js";
 import AddRestaurantModal from "./components/modal/AddRestaurantModal/index.js";
 import { restaurants } from "./database/restaurants.js";
+import { Restaurant } from "./entities/restaurant.js";
 
 interface AppState extends StateType {
   restaurants: Restaurant[];
@@ -35,7 +36,11 @@ class App extends Component<AppState> {
   template() {
     return /*html*/ `
         ${Header()}
-        <main></main>
+        <main>
+          <div id="tabBar"></div> 
+          ${Filter()}
+          <section id="restaurant-list"></section>
+        </main>
         <div id="modal"></div>
     `;
   }
@@ -57,7 +62,7 @@ class App extends Component<AppState> {
   }
 
   private renderRestaurantList() {
-    const $main = document.querySelector("main");
+    const $main = document.querySelector("#restaurant-list");
 
     if ($main instanceof HTMLElement) {
       $main?.replaceChildren();

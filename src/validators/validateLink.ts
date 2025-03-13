@@ -1,11 +1,11 @@
-import { Restaurant } from "../../types/restaurant.js";
+import { Restaurant } from "../entities/restaurant.js";
 import throwError from "./throwError.js";
 
 const urlRegex = /^(https?:\/\/)?([\w\d.-]+)\.([a-z.]{2,6})(\/[\w\d.-]*)*\/?$/i;
 
 const validateLink = (link: Restaurant["link"]) => {
   throwError({
-    condition: !urlRegex.test(link),
+    condition: !link || !urlRegex.test(link),
     message: `잘못된 링크 형식입니다.`,
   });
 };

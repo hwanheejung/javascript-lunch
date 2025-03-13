@@ -1,4 +1,4 @@
-import { Restaurant } from "../../types/restaurant.js";
+import { CategoryKey, Restaurant, SortByKey } from "../entities/restaurant.js";
 
 const STORAGE_KEYS = {
   RESTAURANTS: "restaurants",
@@ -7,13 +7,8 @@ const STORAGE_KEYS = {
 } as const;
 
 type Filters = {
-  category: Restaurant["category"] | null;
-  sortBy: "name" | "distance";
-};
-
-export const DEFAULT_FILTERS: Filters = {
-  category: null,
-  sortBy: "name",
+  category: CategoryKey;
+  sortBy: SortByKey;
 };
 
 export const storage = {
@@ -37,9 +32,7 @@ export const storage = {
 
   get filters(): Filters {
     const raw = localStorage.getItem(STORAGE_KEYS.FILTERS);
-    return raw
-      ? JSON.parse(raw)
-      : { category: DEFAULT_FILTERS.category, sortBy: DEFAULT_FILTERS.sortBy };
+    return raw ? JSON.parse(raw) : { category: "ALL", sortBy: "NAME" };
   },
 
   set filters(filters: Filters) {

@@ -1,5 +1,5 @@
-import { Restaurant } from "../../types/restaurant.js";
 import { DISTANCES } from "../components/modal/AddRestaurantModal/Distance.js";
+import { Restaurant } from "../entities/restaurant.js";
 import throwError from "./throwError.js";
 
 const validateDistance = (distance: Restaurant["distance"]) => {

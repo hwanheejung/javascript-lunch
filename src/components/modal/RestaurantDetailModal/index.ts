@@ -1,5 +1,5 @@
 import { PropsType } from "../../../../types/common.js";
-import { Restaurant } from "../../../../types/restaurant.js";
+import { Restaurant } from "../../../entities/restaurant.js";
 import RestaurantItem from "../../RestaurantItem.js";
 import Modal from "../Modal.js";
 

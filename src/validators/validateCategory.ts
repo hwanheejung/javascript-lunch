@@ -1,5 +1,4 @@
-import { Restaurant } from "../../types/restaurant.js";
-import { CATEGORIES } from "../components/modal/AddRestaurantModal/Category.js";
+import { CATEGORY, Restaurant } from "../entities/restaurant.js";
 import throwError from "./throwError.js";
 
 const validateCategory = (category: Restaurant["category"]) => {
@@ -9,8 +8,10 @@ const validateCategory = (category: Restaurant["category"]) => {
   });
 
   throwError({
-    condition: !CATEGORIES.includes(category),
-    message: `카테고리는 ${CATEGORIES.join(", ")} 중 하나여야 합니다.`,
+    condition: !Object.keys(CATEGORY).includes(category),
+    message: `카테고리는 ${Object.values(CATEGORY).join(
+      ", "
+    )} 중 하나여야 합니다.`,
   });
 };
 

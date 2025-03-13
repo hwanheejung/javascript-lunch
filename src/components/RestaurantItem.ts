@@ -1,12 +1,12 @@
-import { Restaurant } from "../../types/restaurant";
+import { Restaurant } from "../entities/restaurant.js";
 
 const categoryImages: Record<Restaurant["category"], string> = {
-  한식: "category-korean.png",
-  중식: "category-chinese.png",
-  일식: "category-japanese.png",
-  양식: "category-western.png",
-  아시안: "category-asian.png",
-  기타: "category-etc.png",
+  KOREAN: "category-korean.png",
+  CHINESE: "category-chinese.png",
+  JAPANESE: "category-japanese.png",
+  WESTERN: "category-western.png",
+  ASIAN: "category-asian.png",
+  ETC: "category-etc.png",
 };
 
 const CategoryIcon = (category: Restaurant["category"]) => {
