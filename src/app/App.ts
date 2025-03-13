@@ -1,11 +1,16 @@
-import { StateType } from "../types/common.js";
-import Filter from "./components/Filter.js";
-import Header from "./components/Header.js";
-import RestaurantList from "./components/RestaurantList.js";
-import Component from "./components/core/Component.js";
-import AddRestaurantModal from "./components/modal/AddRestaurantModal/index.js";
-import { restaurants } from "./database/restaurants.js";
-import { CategoryKey, Restaurant, SortByKey } from "./entities/restaurant.js";
+import { StateType } from "../../types/common.js";
+import Filter from "../components/Filter.js";
+import Header from "../components/Header.js";
+import RestaurantList from "../components/RestaurantList.js";
+import Component from "../components/core/Component.js";
+import AddRestaurantModal from "../components/modal/AddRestaurantModal/index.js";
+import { restaurants } from "../database/restaurants.js";
+import { CategoryKey, Restaurant, SortByKey } from "../entities/restaurant.js";
+import {
+  handleCategoryFilterChange,
+  handleSortByFilterChange,
+} from "./eventHandlers.js";
+import { getFilteredRestaurants, getSortedRestaurants } from "./helpers.js";
 
 interface AppState extends StateType {
   restaurants: Restaurant[];
@@ -30,24 +35,14 @@ class App extends Component<AppState> {
       {
         action: "set-category-filter",
         eventType: "change",
-        handler: (event: Event) => this.setCategoryFilter(event),
+        handler: (event: Event) => handleCategoryFilterChange(this, event),
       },
       {
         action: "set-sortBy-filter",
         eventType: "change",
-        handler: (event: Event) => this.setSortByFilter(event),
+        handler: (event: Event) => handleSortByFilterChange(this, event),
       }
     );
-  }
-
-  private setCategoryFilter(event: Event) {
-    const selectedValue = (event.target as HTMLSelectElement).value;
-    this.setState({ categoryFilter: selectedValue as CategoryKey });
-  }
-
-  private setSortByFilter(event: Event) {
-    const selectedValue = (event.target as HTMLSelectElement).value;
-    this.setState({ sortByFilter: selectedValue as SortByKey });
   }
 
   private updateRestaurant(newRestaurant: Restaurant) {
@@ -108,20 +103,15 @@ class App extends Component<AppState> {
   private renderRestaurantList() {
     const $main = document.querySelector("#restaurant-list");
 
-    const filteredData = this.state.restaurants.filter(
-      (restaurant) =>
-        this.state.categoryFilter === "ALL" ||
-        restaurant.category === this.state.categoryFilter
+    const filteredData = getFilteredRestaurants(
+      this.state.restaurants,
+      this.state.categoryFilter
     );
 
-    const sortedData = filteredData.sort((a, b) => {
-      if (this.state.sortByFilter === "DISTANCE") {
-        return a.distance - b.distance;
-      } else if (this.state.sortByFilter === "NAME") {
-        return a.name.localeCompare(b.name);
-      }
-      return 0;
-    });
+    const sortedData = getSortedRestaurants(
+      filteredData,
+      this.state.sortByFilter
+    );
 
     if ($main instanceof HTMLElement) {
       $main.replaceChildren();
