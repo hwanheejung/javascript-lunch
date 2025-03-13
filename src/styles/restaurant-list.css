@@ -26,9 +26,7 @@
   height: 64px;
   min-width: 64px;
   min-height: 64px;
-
   margin-right: 16px;
-
   border-radius: 50%;
   background: var(--lighten-color);
 }
@@ -48,15 +46,18 @@
   margin: 0;
 }
 
-.restaurant__distance {
+.restaurant__distance,
+.restaurant__link {
   color: var(--primary-color);
 }
 
+.restaurant__link {
+  padding: 16px 0;
+  color: var(--gray-500);
+}
 .restaurant__description {
   display: -webkit-box;
-
   padding-top: 8px;
-
   overflow: hidden;
   text-overflow: ellipsis;
   -webkit-line-clamp: 2;

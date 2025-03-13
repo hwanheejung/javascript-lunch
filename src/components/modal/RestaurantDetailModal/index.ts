@@ -18,17 +18,22 @@ class RestaurantDetailModal extends Modal<RestaurantDetailModalProps> {
     const { restaurants, restaurantId } = this.props;
     const data = restaurants.find(({ id }) => id === restaurantId);
 
-    const { category, name, distance, description } = data!;
+    const { category, name, distance, description, link } = data!;
 
     return /* html */ `
-        <li class="restaurant restaurant-detailModal">
+        <div class="restaurant restaurant-detailModal">
             ${RestaurantItem.CategoryIcon(category)}
             <div class="restaurant__info">
                 ${RestaurantItem.Name(name)}
                 ${RestaurantItem.Distance(distance)}
                 ${RestaurantItem.Description(description)}
+                ${RestaurantItem.Link(link)}
             </div>
-        </li>
+        </div>
+        <div class="button-container">
+          <button class="button button--secondary text-caption">삭제하기</button>
+          <button data-action="close-modal" class="button button--primary text-caption">닫기</button>
+        </div>
     `;
   }
 }

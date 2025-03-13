@@ -37,11 +37,18 @@ const Description = (description: Restaurant["description"]) => {
     : "";
 };
 
+const Link = (link: Restaurant["link"]) => {
+  return link
+    ? `<a href="${link}" class="restaurant__link" target="_blank">${link}</a>`
+    : "";
+};
+
 const RestaurantItem = {
   CategoryIcon,
   Name,
   Distance,
   Description,
+  Link,
 };
 
 export default RestaurantItem;
