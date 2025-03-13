@@ -6,6 +6,7 @@ import RestaurantDetailModal from "./modal/RestaurantDetailModal/index.js";
 
 interface RestaurantListProps extends PropsType {
   restaurants: Restaurant[];
+  deleteRestaurant: (id: Restaurant["id"]) => void;
 }
 
 class RestaurantList extends Component<{}, RestaurantListProps> {
@@ -25,13 +26,9 @@ class RestaurantList extends Component<{}, RestaurantListProps> {
       new RestaurantDetailModal($modal, {
         restaurantId: $li.dataset.id!,
         restaurants: this.props.restaurants,
-        delete: () => this.deleteRestaurant(),
+        delete: (id: Restaurant["id"]) => this.props.deleteRestaurant(id),
       }).open();
     }
-  }
-
-  private deleteRestaurant() {
-    console.log("delete!");
   }
 
   template() {

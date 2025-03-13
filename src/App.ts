@@ -24,6 +24,14 @@ class App extends Component<AppState> {
     });
   }
 
+  private deleteRestaurant(restaurantId: Restaurant["id"]) {
+    this.setState({
+      restaurants: this.state.restaurants.filter(
+        (restaurant) => restaurant.id !== restaurantId
+      ),
+    });
+  }
+
   template() {
     return /*html*/ `
         ${Header()}
@@ -55,6 +63,7 @@ class App extends Component<AppState> {
       $main?.replaceChildren();
       new RestaurantList($main, {
         restaurants: this.state.restaurants,
+        deleteRestaurant: (id: Restaurant["id"]) => this.deleteRestaurant(id),
       });
     }
   }

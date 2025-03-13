@@ -6,7 +6,7 @@ import Modal from "../Modal.js";
 interface RestaurantDetailModalProps extends PropsType {
   restaurantId: Restaurant["id"];
   restaurants: Restaurant[];
-  delete: () => void;
+  delete: (id: Restaurant["id"]) => void;
 }
 
 class RestaurantDetailModal extends Modal<RestaurantDetailModalProps> {
@@ -21,7 +21,7 @@ class RestaurantDetailModal extends Modal<RestaurantDetailModalProps> {
   }
 
   private handleDelete() {
-    this.props.delete();
+    this.props.delete(this.props.restaurantId);
     this.close();
   }
 
