@@ -44,6 +44,7 @@ class AddRestaurantModal extends Modal<AddRestaurantModalProps> {
     data: Record<string, FormDataEntryValue>
   ): Restaurant => {
     return {
+      id: this.generateId(),
       category: data.category as Restaurant["category"],
       name: data.name as Restaurant["name"],
       distance: parseInt(data.distance as string, 10) as Restaurant["distance"],
@@ -54,7 +55,10 @@ class AddRestaurantModal extends Modal<AddRestaurantModalProps> {
     };
   };
 
-  protected contents() {
+  private generateId = (): string =>
+    `restaurant-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+
+  contents() {
     return /*html */ `
       <h2 class="modal-title text-title">새로운 음식점</h2>
       <form id='submit-restaurant-form' data-action="submit-restaurant-form" data-testid='submit-restaurant-form'>
