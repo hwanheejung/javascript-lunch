@@ -24,7 +24,7 @@ class AddRestaurantModal extends Modal<AddRestaurantModalProps> {
     });
   }
 
-  handleSubmit = (event: Event) => {
+  private handleSubmit = (event: Event) => {
     event.preventDefault();
 
     try {

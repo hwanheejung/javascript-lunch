@@ -12,6 +12,17 @@ interface RestaurantDetailModalProps extends PropsType {
 class RestaurantDetailModal extends Modal<RestaurantDetailModalProps> {
   setup() {
     super.setup();
+
+    this.eventBindings.push({
+      action: `delete-restaurant-${this.props.restaurantId}`,
+      eventType: "click",
+      handler: () => this.handleDelete(),
+    });
+  }
+
+  private handleDelete() {
+    this.props.delete();
+    this.close();
   }
 
   contents() {
@@ -31,7 +42,9 @@ class RestaurantDetailModal extends Modal<RestaurantDetailModalProps> {
             </div>
         </div>
         <div class="button-container">
-          <button class="button button--secondary text-caption">삭제하기</button>
+          <button data-action="delete-restaurant-${
+            this.props.restaurantId
+          }" class="button button--secondary text-caption">삭제하기</button>
           <button data-action="close-modal" class="button button--primary text-caption">닫기</button>
         </div>
     `;

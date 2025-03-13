@@ -30,7 +30,9 @@ class RestaurantList extends Component<{}, RestaurantListProps> {
     }
   }
 
-  private deleteRestaurant() {}
+  private deleteRestaurant() {
+    console.log("delete!");
+  }
 
   template() {
     return /* html */ `
