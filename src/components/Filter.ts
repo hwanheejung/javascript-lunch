@@ -22,8 +22,6 @@ const Filter = ({ selectedCategory, selectedSortBy }: FilterProps) => {
       )
       .join("")}          
     </select>
-
-    <!-- 정렬 셀렉트 박스 -->
     <select name="sorting" id="sorting-filter" class="restaurant-filter" data-action="set-sortBy-filter">
     ${Object.entries(SORTBY)
       .map(

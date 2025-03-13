@@ -48,7 +48,6 @@ class RestaurantList extends Component<{}, RestaurantListProps> {
             </li>
           `
           )
-          .reverse()
           .join("")}
       </ul>
     </section>

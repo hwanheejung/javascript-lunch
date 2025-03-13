@@ -23,12 +23,8 @@ class App extends Component<AppState> {
       sortByFilter: "NAME",
     };
     this.watchState("restaurants", () => this.renderRestaurantList());
-    this.watchState("categoryFilter", () => {
-      console.log(this.state.categoryFilter);
-    });
-    this.watchState("sortByFilter", () => {
-      console.log(this.state.sortByFilter);
-    });
+    this.watchState("categoryFilter", () => this.renderRestaurantList());
+    this.watchState("sortByFilter", () => this.renderRestaurantList());
 
     this.eventBindings.push(
       {
@@ -112,10 +108,25 @@ class App extends Component<AppState> {
   private renderRestaurantList() {
     const $main = document.querySelector("#restaurant-list");
 
+    const filteredData = this.state.restaurants.filter(
+      (restaurant) =>
+        this.state.categoryFilter === "ALL" ||
+        restaurant.category === this.state.categoryFilter
+    );
+
+    const sortedData = filteredData.sort((a, b) => {
+      if (this.state.sortByFilter === "DISTANCE") {
+        return a.distance - b.distance;
+      } else if (this.state.sortByFilter === "NAME") {
+        return a.name.localeCompare(b.name);
+      }
+      return 0;
+    });
+
     if ($main instanceof HTMLElement) {
-      $main?.replaceChildren();
+      $main.replaceChildren();
       new RestaurantList($main, {
-        restaurants: this.state.restaurants,
+        restaurants: sortedData,
         deleteRestaurant: (id: Restaurant["id"]) => this.deleteRestaurant(id),
       });
     }

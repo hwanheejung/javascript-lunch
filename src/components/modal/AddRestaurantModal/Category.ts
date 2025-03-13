@@ -6,6 +6,7 @@ const Category = () => {
     <select name="category" id="category" required data-testid="category">
       <option value="">선택해 주세요</option>
       ${Object.entries(CATEGORY)
+        .filter(([key]) => key !== "ALL")
         .map(([key, label]) => `<option value="${key}">${label}</option>`)
         .join("")}
     </select>
