@@ -18,3 +18,14 @@ export const getSortedRestaurants = (
     return 0;
   });
 };
+
+export const getFilteredRestaurantsByTab = (
+  restaurants: Restaurant[],
+  currentTab: string,
+  favoriteIds: Restaurant["id"][]
+) => {
+  if (currentTab === "ALL") return restaurants;
+  return restaurants.filter((restaurant) =>
+    favoriteIds.includes(restaurant.id)
+  );
+};

@@ -49,7 +49,7 @@ const FavoriteButton = (id: Restaurant["id"], isFavorite: boolean) => {
     : "favorite-icon-lined.png";
 
   return /* html */ `
-    <div class="restaurant__favorite-button" data-restaurant-id="${id}">
+    <div class="restaurant__favorite-button" data-restaurant-id="${id}" data-action="toggle-favorite">
       <img src="./icons/${favoriteIcon}" alt="즐겨찾기 아이콘" />
     </div>
   `;

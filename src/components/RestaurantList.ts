@@ -30,7 +30,7 @@ class RestaurantList extends Component<{}, RestaurantListProps> {
       new RestaurantDetailModal($modal, {
         restaurantId: id,
         restaurants: this.props.restaurants,
-        isFavorite: this.props.favoriteIds.includes(id),
+        isFavorite: () => this.props.favoriteIds.includes(id),
         delete: (id: Restaurant["id"]) => this.props.deleteRestaurant(id),
         toggleFavorite: () => this.props.toggleFavorite(id),
       }).open();

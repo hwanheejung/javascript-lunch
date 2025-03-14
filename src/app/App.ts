@@ -11,27 +11,35 @@ import { isHTMLElement } from "../utils/typeGuards.js";
 import {
   handleCategoryFilterChange,
   handleSortByFilterChange,
+  handleTabChange,
 } from "./eventHandlers.js";
-import { getFilteredRestaurants, getSortedRestaurants } from "./helpers.js";
+import {
+  getFilteredRestaurants,
+  getFilteredRestaurantsByTab,
+  getSortedRestaurants,
+} from "./helpers.js";
 
 interface AppState extends StateType {
   restaurants: Restaurant[];
   favoriteIds: Restaurant["id"][];
   categoryFilter: CategoryKey;
   sortByFilter: SortByKey;
+  currentTab: "ALL" | "FAVORITE";
 }
 
 class App extends Component<AppState> {
-  setup(): void {
+  setup() {
     this.state = {
       restaurants: restaurants,
       favoriteIds: favoriteIds,
       categoryFilter: "ALL",
       sortByFilter: "NAME",
+      currentTab: "ALL",
     };
     this.watchState("restaurants", () => this.renderRestaurantList());
     this.watchState("categoryFilter", () => this.renderRestaurantList());
     this.watchState("sortByFilter", () => this.renderRestaurantList());
+    this.watchState("currentTab", () => this.renderRestaurantList());
     this.watchState("favoriteIds", () => this.renderFavoriteStatesOnly());
 
     this.eventBindings.push(
@@ -44,6 +52,11 @@ class App extends Component<AppState> {
         action: "set-sortBy-filter",
         eventType: "change",
         handler: (event: Event) => handleSortByFilterChange(this, event),
+      },
+      {
+        action: "set-tab",
+        eventType: "click",
+        handler: (event: Event) => handleTabChange(this, event),
       }
     );
   }
@@ -74,7 +87,10 @@ class App extends Component<AppState> {
     return /*html*/ `
         ${Header()}
         <main> 
-          <div id="tabBar"></div> 
+          <div id="tabBar">
+            <button class="active" data-tab="ALL" data-action="set-tab">전체</button>
+            <button data-tab="FAVORITE" data-action="set-tab">즐겨찾기</button>
+          </div> 
           <section class="restaurant-filter-container"></section>
           <section id="restaurant-list"></section>
         </main>
@@ -124,10 +140,16 @@ class App extends Component<AppState> {
       this.state.sortByFilter
     );
 
+    const currentTabData = getFilteredRestaurantsByTab(
+      sortedData,
+      this.state.currentTab,
+      this.state.favoriteIds
+    );
+
     if (isHTMLElement($main)) {
       $main.replaceChildren();
       new RestaurantList($main, {
-        restaurants: sortedData,
+        restaurants: currentTabData,
         deleteRestaurant: (id: Restaurant["id"]) => this.deleteRestaurant(id),
         favoriteIds: this.state.favoriteIds,
         toggleFavorite: (id: Restaurant["id"]) => this.toggleFavorite(id),
@@ -138,26 +160,28 @@ class App extends Component<AppState> {
   private renderFavoriteStatesOnly() {
     const { favoriteIds } = this.state;
 
-    document
-      .querySelectorAll("[data-restaurant-id]")
-      .forEach((item: Element) => {
-        const id = item.getAttribute("data-restaurant-id");
-        const icon = item.querySelector<HTMLImageElement>(
-          ".restaurant__favorite-button img"
-        );
+    console.log(favoriteIds);
 
-        if (icon && id) {
-          const isFavorite = favoriteIds.includes(id);
-          icon.setAttribute(
-            "src",
-            `./icons/${
-              isFavorite
-                ? "favorite-icon-filled.png"
-                : "favorite-icon-lined.png"
-            }`
-          );
-        }
-      });
+    // document
+    //   .querySelectorAll("[data-restaurant-id]")
+    //   .forEach((item: Element) => {
+    //     const id = item.getAttribute("data-restaurant-id");
+    //     const icon = item.querySelector<HTMLImageElement>(
+    //       ".restaurant__favorite-button img"
+    //     );
+
+    //     if (icon && id) {
+    //       const isFavorite = favoriteIds.includes(id);
+    //       icon.setAttribute(
+    //         "src",
+    //         `./icons/${
+    //           isFavorite
+    //             ? "favorite-icon-filled.png"
+    //             : "favorite-icon-lined.png"
+    //         }`
+    //       );
+    //     }
+    //   });
   }
 }
 
