@@ -13,17 +13,13 @@ import {
   handleSortByFilterChange,
   handleTabChange,
 } from "./eventHandlers.js";
-import {
-  getFilteredRestaurants,
-  getFilteredRestaurantsByTab,
-  getSortedRestaurants,
-} from "./helpers.js";
+import { getRestaurantsData } from "./helpers.js";
 
 interface AppState extends StateType {
   restaurants: Restaurant[];
   favoriteIds: Restaurant["id"][];
   categoryFilter: CategoryKey;
-  sortByFilter: SortByKey;
+  sortBy: SortByKey;
   currentTab: "ALL" | "FAVORITE";
 }
 
@@ -33,12 +29,12 @@ class App extends Component<AppState> {
       restaurants: restaurants,
       favoriteIds: favoriteIds,
       categoryFilter: "ALL",
-      sortByFilter: "NAME",
+      sortBy: "NAME",
       currentTab: "ALL",
     };
     this.watchState("restaurants", () => this.renderRestaurantList());
     this.watchState("categoryFilter", () => this.renderRestaurantList());
-    this.watchState("sortByFilter", () => this.renderRestaurantList());
+    this.watchState("sortBy", () => this.renderRestaurantList());
     this.watchState("currentTab", () => this.renderRestaurantList());
     this.watchState("favoriteIds", () => this.renderFavoriteStatesOnly());
 
@@ -112,7 +108,7 @@ class App extends Component<AppState> {
     if (isHTMLElement($filterContainer))
       $filterContainer.innerHTML = Filter({
         selectedCategory: this.state.categoryFilter,
-        selectedSortBy: this.state.sortByFilter,
+        selectedSortBy: this.state.sortBy,
       });
   }
 
@@ -129,27 +125,12 @@ class App extends Component<AppState> {
 
   private renderRestaurantList() {
     const $main = document.querySelector("#restaurant-list");
-
-    const filteredData = getFilteredRestaurants(
-      this.state.restaurants,
-      this.state.categoryFilter
-    );
-
-    const sortedData = getSortedRestaurants(
-      filteredData,
-      this.state.sortByFilter
-    );
-
-    const currentTabData = getFilteredRestaurantsByTab(
-      sortedData,
-      this.state.currentTab,
-      this.state.favoriteIds
-    );
+    const data = getRestaurantsData(this)(this.state.restaurants);
 
     if (isHTMLElement($main)) {
       $main.replaceChildren();
       new RestaurantList($main, {
-        restaurants: currentTabData,
+        restaurants: data,
         deleteRestaurant: (id: Restaurant["id"]) => this.deleteRestaurant(id),
         favoriteIds: this.state.favoriteIds,
         toggleFavorite: (id: Restaurant["id"]) => this.toggleFavorite(id),

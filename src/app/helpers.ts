@@ -1,6 +1,7 @@
 import { Restaurant } from "../entities/restaurant.js";
+import { pipe } from "../utils/pipe.js";
 
-export const getFilteredRestaurants = (
+const getFilteredRestaurants = (
   restaurants: Restaurant[],
   categoryFilter: string
 ) =>
@@ -8,10 +9,7 @@ export const getFilteredRestaurants = (
     ? restaurants
     : restaurants.filter((r) => r.category === categoryFilter);
 
-export const getSortedRestaurants = (
-  restaurants: Restaurant[],
-  sortBy: string
-) => {
+const getSortedRestaurants = (restaurants: Restaurant[], sortBy: string) => {
   return [...restaurants].sort((a, b) => {
     if (sortBy === "DISTANCE") return a.distance - b.distance;
     if (sortBy === "NAME") return a.name.localeCompare(b.name);
@@ -19,7 +17,7 @@ export const getSortedRestaurants = (
   });
 };
 
-export const getFilteredRestaurantsByTab = (
+const getFilteredRestaurantsByTab = (
   restaurants: Restaurant[],
   currentTab: string,
   favoriteIds: Restaurant["id"][]
@@ -29,3 +27,20 @@ export const getFilteredRestaurantsByTab = (
     favoriteIds.includes(restaurant.id)
   );
 };
+
+export const getRestaurantsData = (instance: any) =>
+  pipe(
+    (restaurants) =>
+      getFilteredRestaurants(
+        restaurants as Restaurant[],
+        instance.state.categoryFilter
+      ),
+    (filteredData) =>
+      getSortedRestaurants(filteredData, instance.state.sortByFilter),
+    (sortedData) =>
+      getFilteredRestaurantsByTab(
+        sortedData,
+        instance.state.currentTab,
+        instance.state.favoriteIds
+      )
+  );
