@@ -83,10 +83,6 @@ class App extends Component<AppState> {
     return /*html*/ `
         ${Header()}
         <main> 
-          <div id="tabBar">
-            <button class="active" data-tab="ALL" data-action="set-tab">전체</button>
-            <button data-tab="FAVORITE" data-action="set-tab">즐겨찾기</button>
-          </div> 
           <section class="restaurant-filter-container"></section>
           <section id="restaurant-list"></section>
         </main>

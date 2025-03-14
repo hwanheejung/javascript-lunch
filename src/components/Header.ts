@@ -6,6 +6,10 @@ const Header = () => {
         <img src="./icons/add-button.png" alt="음식점 추가">
       </button>
     </header>
+    <div id="tabBar">
+      <button class="active" data-tab="ALL" data-action="set-tab">전체</button>
+      <button data-tab="FAVORITE" data-action="set-tab">즐겨찾기</button>
+    </div> 
   `;
 };
 
