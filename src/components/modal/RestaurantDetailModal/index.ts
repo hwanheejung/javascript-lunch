@@ -8,17 +8,25 @@ interface RestaurantDetailModalProps extends PropsType {
   restaurants: Restaurant[];
   isFavorite: boolean;
   delete: (id: Restaurant["id"]) => void;
+  toggleFavorite: () => void;
 }
 
 class RestaurantDetailModal extends Modal<RestaurantDetailModalProps> {
   setup() {
     super.setup();
 
-    this.eventBindings.push({
-      action: `delete-restaurant-${this.props.restaurantId}`,
-      eventType: "click",
-      handler: () => this.handleDelete(),
-    });
+    this.eventBindings.push(
+      {
+        action: `delete-restaurant-${this.props.restaurantId}`,
+        eventType: "click",
+        handler: () => this.handleDelete(),
+      },
+      {
+        action: "toggle-favorite",
+        eventType: "click",
+        handler: () => this.props.toggleFavorite(),
+      }
+    );
   }
 
   private handleDelete() {

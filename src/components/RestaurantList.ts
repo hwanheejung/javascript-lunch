@@ -8,6 +8,7 @@ interface RestaurantListProps extends PropsType {
   restaurants: Restaurant[];
   deleteRestaurant: (id: Restaurant["id"]) => void;
   favoriteIds: Restaurant["id"][];
+  toggleFavorite: (id: Restaurant["id"]) => void;
 }
 
 class RestaurantList extends Component<{}, RestaurantListProps> {
@@ -30,6 +31,7 @@ class RestaurantList extends Component<{}, RestaurantListProps> {
         restaurants: this.props.restaurants,
         isFavorite: this.props.favoriteIds.includes(id),
         delete: (id: Restaurant["id"]) => this.props.deleteRestaurant(id),
+        toggleFavorite: () => this.props.toggleFavorite(id),
       }).open();
     }
   }

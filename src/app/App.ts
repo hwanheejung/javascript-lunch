@@ -31,6 +31,7 @@ class App extends Component<AppState> {
     this.watchState("restaurants", () => this.renderRestaurantList());
     this.watchState("categoryFilter", () => this.renderRestaurantList());
     this.watchState("sortByFilter", () => this.renderRestaurantList());
+    this.watchState("favoriteIds", () => this.renderFavoriteStatesOnly());
 
     this.eventBindings.push(
       {
@@ -46,7 +47,7 @@ class App extends Component<AppState> {
     );
   }
 
-  private updateRestaurant(newRestaurant: Restaurant) {
+  private addRestaurant(newRestaurant: Restaurant) {
     this.setState({
       restaurants: [...this.state.restaurants, newRestaurant],
     });
@@ -58,6 +59,14 @@ class App extends Component<AppState> {
         (restaurant) => restaurant.id !== restaurantId
       ),
     });
+  }
+
+  private toggleFavorite(restaurantId: Restaurant["id"]) {
+    const favoriteIds = this.state.favoriteIds.includes(restaurantId)
+      ? this.state.favoriteIds.filter((id) => id !== restaurantId)
+      : [...this.state.favoriteIds, restaurantId];
+
+    this.setState({ favoriteIds });
   }
 
   template() {
@@ -74,7 +83,7 @@ class App extends Component<AppState> {
 
   componentDidMount() {
     this.renderFilter();
-    this.renderModal();
+    this.renderAddRestaurantModal();
     this.renderRestaurantList();
   }
 
@@ -90,13 +99,13 @@ class App extends Component<AppState> {
       });
   }
 
-  private renderModal() {
+  private renderAddRestaurantModal() {
     const $modal = document.querySelector("#modal");
 
     if ($modal instanceof HTMLElement) {
       new AddRestaurantModal($modal, {
         submit: (newRestaurant: Restaurant) =>
-          this.updateRestaurant(newRestaurant),
+          this.addRestaurant(newRestaurant),
       });
     }
   }
@@ -120,17 +129,21 @@ class App extends Component<AppState> {
         restaurants: sortedData,
         deleteRestaurant: (id: Restaurant["id"]) => this.deleteRestaurant(id),
         favoriteIds: this.state.favoriteIds,
+        toggleFavorite: (id: Restaurant["id"]) => this.toggleFavorite(id),
       });
     }
   }
 
   private renderFavoriteStatesOnly() {
     const { favoriteIds } = this.state;
+
     document
       .querySelectorAll("[data-restaurant-id]")
       .forEach((item: Element) => {
         const id = item.getAttribute("data-restaurant-id");
-        const icon = item.querySelector<HTMLImageElement>(".favorite-icon");
+        const icon = item.querySelector<HTMLImageElement>(
+          ".restaurant__favorite-button img"
+        );
 
         if (icon && id) {
           const isFavorite = favoriteIds.includes(id);
