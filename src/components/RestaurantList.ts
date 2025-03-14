@@ -1,5 +1,6 @@
 import { PropsType } from "../../types/common.js";
 import { Restaurant } from "../entities/restaurant.js";
+import { isHTMLElement } from "../utils/typeGuards.js";
 import RestaurantItem from "./RestaurantItem.js";
 import Component from "./core/Component.js";
 import RestaurantDetailModal from "./modal/RestaurantDetailModal/index.js";
@@ -24,7 +25,7 @@ class RestaurantList extends Component<{}, RestaurantListProps> {
     const $li = (event.target as HTMLElement).closest("li");
     const $modal = document.querySelector("#modal");
 
-    if ($li instanceof HTMLElement && $modal instanceof HTMLElement) {
+    if (isHTMLElement($li) && isHTMLElement($modal)) {
       const id = $li.dataset.id!;
       new RestaurantDetailModal($modal, {
         restaurantId: id,

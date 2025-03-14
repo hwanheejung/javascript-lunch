@@ -7,6 +7,7 @@ import AddRestaurantModal from "../components/modal/AddRestaurantModal/index.js"
 import { favoriteIds } from "../database/favoriteIds.js";
 import { restaurants } from "../database/restaurants.js";
 import { CategoryKey, Restaurant, SortByKey } from "../entities/restaurant.js";
+import { isHTMLElement } from "../utils/typeGuards.js";
 import {
   handleCategoryFilterChange,
   handleSortByFilterChange,
@@ -92,7 +93,7 @@ class App extends Component<AppState> {
       ".restaurant-filter-container"
     );
 
-    if ($filterContainer instanceof HTMLElement)
+    if (isHTMLElement($filterContainer))
       $filterContainer.innerHTML = Filter({
         selectedCategory: this.state.categoryFilter,
         selectedSortBy: this.state.sortByFilter,
@@ -102,7 +103,7 @@ class App extends Component<AppState> {
   private renderAddRestaurantModal() {
     const $modal = document.querySelector("#modal");
 
-    if ($modal instanceof HTMLElement) {
+    if (isHTMLElement($modal)) {
       new AddRestaurantModal($modal, {
         submit: (newRestaurant: Restaurant) =>
           this.addRestaurant(newRestaurant),
@@ -123,7 +124,7 @@ class App extends Component<AppState> {
       this.state.sortByFilter
     );
 
-    if ($main instanceof HTMLElement) {
+    if (isHTMLElement($main)) {
       $main.replaceChildren();
       new RestaurantList($main, {
         restaurants: sortedData,
@@ -161,4 +162,4 @@ class App extends Component<AppState> {
 }
 
 const app = document.querySelector("#app");
-if (app instanceof HTMLElement) new App(app);
+if (isHTMLElement(app)) new App(app);

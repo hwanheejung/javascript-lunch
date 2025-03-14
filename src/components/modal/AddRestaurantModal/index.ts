@@ -1,5 +1,6 @@
 import { PropsType } from "../../../../types/common.js";
 import { Restaurant } from "../../../entities/restaurant.js";
+import { isError } from "../../../utils/typeGuards.js";
 import validateRestaurantForm from "../../../validators/validateRestaurantForm.js";
 import Modal from "../Modal.js";
 import Category from "./Category.js";
@@ -36,7 +37,7 @@ class AddRestaurantModal extends Modal<AddRestaurantModalProps> {
       this.props.submit(data);
       this.close();
     } catch (error) {
-      if (error instanceof Error) alert(error.message);
+      if (isError(error)) alert(error.message);
     }
   };
 
