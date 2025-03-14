@@ -35,8 +35,7 @@ export const getRestaurantsData = (instance: any) =>
         restaurants as Restaurant[],
         instance.state.categoryFilter
       ),
-    (filteredData) =>
-      getSortedRestaurants(filteredData, instance.state.sortByFilter),
+    (filteredData) => getSortedRestaurants(filteredData, instance.state.sortBy),
     (sortedData) =>
       getFilteredRestaurantsByTab(
         sortedData,

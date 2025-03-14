@@ -7,7 +7,7 @@ export const handleCategoryFilterChange = (instance: any, event: Event) => {
 
 export const handleSortByFilterChange = (instance: any, event: Event) => {
   const selectedValue = (event.target as HTMLSelectElement).value;
-  instance.setState({ sortByFilter: selectedValue as SortByKey });
+  instance.setState({ sortBy: selectedValue as SortByKey });
 };
 
 export const handleTabChange = (instance: any, event: Event) => {
