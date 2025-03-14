@@ -14,27 +14,41 @@ interface RestaurantListProps extends PropsType {
 
 class RestaurantList extends Component<{}, RestaurantListProps> {
   override setup() {
-    this.eventBindings.push({
-      action: "select-restaurant",
-      eventType: "click",
-      handler: (event) => this.selectRestaurant(event),
-    });
+    this.eventBindings.push(
+      {
+        action: "select-restaurant",
+        eventType: "click",
+        handler: (event) => this.selectRestaurant(event),
+      },
+      {
+        action: "toggle-favorite",
+        eventType: "click",
+        handler: (event: Event) => {
+          event.stopPropagation();
+          const $li = (event.target as HTMLElement).closest("li");
+          const $modal = document.querySelector("#modal");
+          if (!isHTMLElement($li) || !isHTMLElement($modal)) return;
+
+          const id = $li.dataset.id!;
+          this.props.toggleFavorite(id);
+        },
+      }
+    );
   }
 
   private selectRestaurant(event: Event) {
     const $li = (event.target as HTMLElement).closest("li");
     const $modal = document.querySelector("#modal");
+    if (!isHTMLElement($li) || !isHTMLElement($modal)) return;
 
-    if (isHTMLElement($li) && isHTMLElement($modal)) {
-      const id = $li.dataset.id!;
-      new RestaurantDetailModal($modal, {
-        restaurantId: id,
-        restaurants: this.props.restaurants,
-        isFavorite: () => this.props.favoriteIds.includes(id),
-        delete: (id: Restaurant["id"]) => this.props.deleteRestaurant(id),
-        toggleFavorite: () => this.props.toggleFavorite(id),
-      }).open();
-    }
+    const id = $li.dataset.id!;
+    new RestaurantDetailModal($modal, {
+      restaurantId: id,
+      restaurants: this.props.restaurants,
+      isFavorite: () => this.props.favoriteIds.includes(id),
+      delete: (id: Restaurant["id"]) => this.props.deleteRestaurant(id),
+      toggleFavorite: () => this.props.toggleFavorite(id),
+    }).open();
   }
 
   override template() {

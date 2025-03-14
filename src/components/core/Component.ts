@@ -66,17 +66,19 @@ abstract class Component<
   }
 
   #bindEvents(): void {
-    this.eventBindings.forEach(({ action, eventType, handler }) => {
-      this.$target.addEventListener(eventType, (event) => {
-        const target = event.target as HTMLElement;
-        const actionElement = target.closest<HTMLElement>(
-          `[data-action="${action}"]`
-        );
+    const handlersByAction = new Map<string, (event: Event) => void>();
+    this.eventBindings.forEach(({ action, handler }) => {
+      handlersByAction.set(action, handler);
+    });
 
-        if (actionElement && this.$target.contains(actionElement)) {
-          handler(event);
-        }
-      });
+    this.$target.addEventListener("click", (event) => {
+      const target = event.target as HTMLElement;
+      const actionElement = target.closest<HTMLElement>("[data-action]");
+      if (!actionElement || !this.$target.contains(actionElement)) return;
+
+      const action = actionElement.dataset.action;
+      const handler = handlersByAction.get(action!);
+      if (handler) handler.call(this, event);
     });
   }
 

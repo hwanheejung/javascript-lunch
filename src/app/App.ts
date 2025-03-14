@@ -117,17 +117,16 @@ class App extends Component<AppState> {
 
   private renderAddRestaurantModal() {
     const $modal = document.querySelector("#modal");
+    if (!isHTMLElement($modal)) return;
 
-    if (isHTMLElement($modal)) {
-      new AddRestaurantModal($modal, {
-        submit: (newRestaurant: Restaurant) =>
-          this.addRestaurant(newRestaurant),
-      });
-    }
+    new AddRestaurantModal($modal, {
+      submit: (newRestaurant: Restaurant) => this.addRestaurant(newRestaurant),
+    });
   }
 
   private renderRestaurantList() {
     const $main = document.querySelector("#restaurant-list");
+    if (!isHTMLElement($main)) return;
 
     const data =
       this.state.currentTab === "ALL"
@@ -138,15 +137,13 @@ class App extends Component<AppState> {
             this.state.favoriteIds
           );
 
-    if (isHTMLElement($main)) {
-      $main.replaceChildren();
-      new RestaurantList($main, {
-        restaurants: data,
-        deleteRestaurant: (id: Restaurant["id"]) => this.deleteRestaurant(id),
-        favoriteIds: this.state.favoriteIds,
-        toggleFavorite: (id: Restaurant["id"]) => this.toggleFavorite(id),
-      });
-    }
+    $main.replaceChildren();
+    new RestaurantList($main, {
+      restaurants: data,
+      deleteRestaurant: (id: Restaurant["id"]) => this.deleteRestaurant(id),
+      favoriteIds: this.state.favoriteIds,
+      toggleFavorite: (id: Restaurant["id"]) => this.toggleFavorite(id),
+    });
   }
 
   private renderFavoriteStatesOnly() {
