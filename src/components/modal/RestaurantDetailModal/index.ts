@@ -12,7 +12,7 @@ interface RestaurantDetailModalProps extends PropsType {
 }
 
 class RestaurantDetailModal extends Modal<RestaurantDetailModalProps> {
-  setup() {
+  override setup() {
     super.setup();
 
     this.eventBindings.push(
@@ -34,7 +34,7 @@ class RestaurantDetailModal extends Modal<RestaurantDetailModalProps> {
     this.close();
   }
 
-  contents() {
+  override contents() {
     const { restaurants, restaurantId } = this.props;
     const data = restaurants.find(({ id }) => id === restaurantId);
 

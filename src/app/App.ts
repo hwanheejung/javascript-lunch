@@ -13,7 +13,7 @@ import {
   handleSortByFilterChange,
   handleTabChange,
 } from "./eventHandlers.js";
-import { getRestaurantsData } from "./helpers.js";
+import { getFavoriteRestaurants, getRestaurants } from "./helpers.js";
 
 interface AppState extends StateType {
   restaurants: Restaurant[];
@@ -24,7 +24,7 @@ interface AppState extends StateType {
 }
 
 class App extends Component<AppState> {
-  setup() {
+  override setup() {
     this.state = {
       restaurants: restaurants,
       favoriteIds: favoriteIds,
@@ -35,7 +35,10 @@ class App extends Component<AppState> {
     this.watchState("restaurants", () => this.renderRestaurantList());
     this.watchState("categoryFilter", () => this.renderRestaurantList());
     this.watchState("sortBy", () => this.renderRestaurantList());
-    this.watchState("currentTab", () => this.renderRestaurantList());
+    this.watchState("currentTab", () => {
+      this.renderFilter();
+      this.renderRestaurantList();
+    });
     this.watchState("favoriteIds", () => this.renderFavoriteStatesOnly());
 
     this.eventBindings.push(
@@ -79,7 +82,7 @@ class App extends Component<AppState> {
     this.setState({ favoriteIds });
   }
 
-  template() {
+  override template() {
     return /*html*/ `
         ${Header()}
         <main> 
@@ -90,7 +93,7 @@ class App extends Component<AppState> {
     `;
   }
 
-  componentDidMount() {
+  override componentDidMount() {
     this.renderFilter();
     this.renderAddRestaurantModal();
     this.renderRestaurantList();
@@ -100,12 +103,16 @@ class App extends Component<AppState> {
     const $filterContainer = document.querySelector(
       ".restaurant-filter-container"
     );
+    if (!isHTMLElement($filterContainer)) return;
 
-    if (isHTMLElement($filterContainer))
-      $filterContainer.innerHTML = Filter({
-        selectedCategory: this.state.categoryFilter,
-        selectedSortBy: this.state.sortBy,
-      });
+    if (this.state.currentTab === "FAVORITE") {
+      $filterContainer.innerHTML = "";
+      return;
+    }
+    $filterContainer.innerHTML = Filter({
+      selectedCategory: this.state.categoryFilter,
+      selectedSortBy: this.state.sortBy,
+    });
   }
 
   private renderAddRestaurantModal() {
@@ -121,7 +128,15 @@ class App extends Component<AppState> {
 
   private renderRestaurantList() {
     const $main = document.querySelector("#restaurant-list");
-    const data = getRestaurantsData(this)(this.state.restaurants);
+
+    const data =
+      this.state.currentTab === "ALL"
+        ? getRestaurants(this)(this.state.restaurants)
+        : getFavoriteRestaurants(
+            this.state.restaurants,
+            this.state.currentTab,
+            this.state.favoriteIds
+          );
 
     if (isHTMLElement($main)) {
       $main.replaceChildren();

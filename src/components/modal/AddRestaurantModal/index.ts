@@ -14,7 +14,7 @@ interface AddRestaurantModalProps extends PropsType {
 }
 
 class AddRestaurantModal extends Modal<AddRestaurantModalProps> {
-  setup() {
+  override setup() {
     super.setup();
     this.setupTriggerButtons([".gnb__button"]);
 
@@ -59,7 +59,7 @@ class AddRestaurantModal extends Modal<AddRestaurantModalProps> {
   private generateId = (): string =>
     `restaurant-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
 
-  contents() {
+  override contents() {
     return /*html */ `
       <h2 class="modal-title text-title">새로운 음식점</h2>
       <form id='submit-restaurant-form' data-action="submit-restaurant-form" data-testid='submit-restaurant-form'>

@@ -13,7 +13,7 @@ interface RestaurantListProps extends PropsType {
 }
 
 class RestaurantList extends Component<{}, RestaurantListProps> {
-  setup() {
+  override setup() {
     this.eventBindings.push({
       action: "select-restaurant",
       eventType: "click",
@@ -37,7 +37,7 @@ class RestaurantList extends Component<{}, RestaurantListProps> {
     }
   }
 
-  template() {
+  override template() {
     return /* html */ `
     <section class="restaurant-list-container" data-testid="restaurant-list">
       <ul class="restaurant-list">

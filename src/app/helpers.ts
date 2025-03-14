@@ -17,7 +17,17 @@ const getSortedRestaurants = (restaurants: Restaurant[], sortBy: string) => {
   });
 };
 
-const getFilteredRestaurantsByTab = (
+export const getRestaurants = (instance: any) =>
+  pipe(
+    (restaurants) =>
+      getFilteredRestaurants(
+        restaurants as Restaurant[],
+        instance.state.categoryFilter
+      ),
+    (filteredData) => getSortedRestaurants(filteredData, instance.state.sortBy)
+  );
+
+export const getFavoriteRestaurants = (
   restaurants: Restaurant[],
   currentTab: string,
   favoriteIds: Restaurant["id"][]
@@ -27,19 +37,3 @@ const getFilteredRestaurantsByTab = (
     favoriteIds.includes(restaurant.id)
   );
 };
-
-export const getRestaurantsData = (instance: any) =>
-  pipe(
-    (restaurants) =>
-      getFilteredRestaurants(
-        restaurants as Restaurant[],
-        instance.state.categoryFilter
-      ),
-    (filteredData) => getSortedRestaurants(filteredData, instance.state.sortBy),
-    (sortedData) =>
-      getFilteredRestaurantsByTab(
-        sortedData,
-        instance.state.currentTab,
-        instance.state.favoriteIds
-      )
-  );

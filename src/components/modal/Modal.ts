@@ -14,7 +14,7 @@ abstract class Modal<Props extends PropsType = {}> extends Component<
   private triggerSelectors: string[] = [];
   private $triggerButtons: HTMLElement[] = [];
 
-  setup() {
+  override setup() {
     this.state = {
       isOpen: false,
     };
@@ -48,7 +48,7 @@ abstract class Modal<Props extends PropsType = {}> extends Component<
     });
   }
 
-  template() {
+  override template() {
     if (!this.state.isOpen) return "";
     return /* html */ `
       <div class="modal" data-testid="modal">
