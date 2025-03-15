@@ -20,6 +20,7 @@ abstract class Component<
   #changedKeys: Set<StateKeyOf<State>> = new Set();
   #stateToUIMap: Partial<Record<StateKeyOf<State>, UIUpdateCallback>> = {};
   protected eventBindings: EventBinding[] = [];
+  #abortController: AbortController = new AbortController();
 
   constructor($target: HTMLElement, props?: Props) {
     this.$target = $target;
@@ -66,20 +67,38 @@ abstract class Component<
   }
 
   #bindEvents(): void {
-    const handlersByAction = new Map<string, (event: Event) => void>();
-    this.eventBindings.forEach(({ action, handler }) => {
-      handlersByAction.set(action, handler);
+    // 이벤트 타입별로 그룹화
+    const eventBindingsByType = new Map<
+      string,
+      { action: string; handler: (event: Event) => void }[]
+    >();
+
+    this.eventBindings.forEach(({ action, eventType, handler }) => {
+      if (!eventBindingsByType.has(eventType)) {
+        eventBindingsByType.set(eventType, []);
+      }
+      eventBindingsByType.get(eventType)!.push({ action, handler });
     });
 
-    this.$target.addEventListener("click", (event) => {
-      const target = event.target as HTMLElement;
-      const actionElement = target.closest<HTMLElement>("[data-action]");
-      if (!actionElement || !this.$target.contains(actionElement)) return;
-
-      const action = actionElement.dataset.action;
-      const handler = handlersByAction.get(action!);
-      if (handler) handler.call(this, event);
+    eventBindingsByType.forEach((bindings, eventType) => {
+      this.$target.addEventListener(
+        eventType,
+        (event: Event) => {
+          const target = event.target as HTMLElement;
+          const actionElement = target.closest<HTMLElement>("[data-action]");
+          if (!actionElement || !this.$target.contains(actionElement)) return;
+          const action = actionElement.dataset.action;
+          const binding = bindings.find((b) => b.action === action);
+          if (binding) binding.handler.call(this, event);
+        },
+        { signal: this.#abortController.signal }
+      );
     });
+  }
+
+  public destroy(): void {
+    this.#abortController.abort();
+    this.#abortController = new AbortController();
   }
 
   protected render(): void {
