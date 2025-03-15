@@ -35,17 +35,22 @@ abstract class Modal<Props extends PropsType = {}> extends Component<
 
   protected setupTriggerButtons(selectors: string[] = []) {
     this.triggerSelectors = selectors;
-    if (!this.triggerSelectors.length) return;
 
-    this.$triggerButtons = this.triggerSelectors
-      .map((selector) => Array.from(document.querySelectorAll(selector)))
-      .flat()
-      .filter((el): el is HTMLElement => isHTMLElement(el));
+    const runIfTriggersExist: () => void = this.triggerSelectors.length
+      ? () => {
+          this.$triggerButtons = this.triggerSelectors
+            .map((selector) => Array.from(document.querySelectorAll(selector)))
+            .flat()
+            .filter((el): el is HTMLElement => isHTMLElement(el));
 
-    this.$triggerButtons.forEach((button) => {
-      button.removeEventListener("click", this.handleOpen);
-      button.addEventListener("click", this.handleOpen);
-    });
+          this.$triggerButtons.forEach((button) => {
+            button.removeEventListener("click", this.handleOpen);
+            button.addEventListener("click", this.handleOpen);
+          });
+        }
+      : () => {};
+
+    runIfTriggersExist();
   }
 
   override template() {

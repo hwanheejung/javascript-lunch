@@ -1,5 +1,5 @@
+import { pipe } from "@zoeykr/function-al";
 import { CategoryKey, Restaurant, SortByKey } from "../entities";
-import { pipe } from "../utils";
 import type { AppState } from "./App";
 
 const getFilteredRestaurants = (
