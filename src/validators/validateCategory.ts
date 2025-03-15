@@ -1,4 +1,4 @@
-import { CATEGORY, Restaurant } from "../entities/restaurant.js";
+import { CATEGORY, Restaurant } from "../entities";
 import throwError from "./throwError.js";
 
 const validateCategory = (category: Restaurant["category"]) => {

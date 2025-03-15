@@ -1,6 +1,6 @@
 import { PropsType } from "../../types/common.js";
-import { Restaurant } from "../entities/restaurant.js";
-import { isHTMLElement } from "../utils/typeGuards.js";
+import { Restaurant } from "../entities";
+import { isHTMLElement } from "../utils";
 import RestaurantItem from "./RestaurantItem.js";
 import { Component } from "./core";
 import RestaurantDetailModal from "./modal/RestaurantDetailModal/index.js";

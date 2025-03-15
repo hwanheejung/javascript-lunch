@@ -1,9 +1,10 @@
-import { CategoryKey, Restaurant, SortByKey } from "../entities/restaurant.js";
+import { CategoryKey, Restaurant, SortByKey, TabKey } from "../entities";
 
 const STORAGE_KEYS = {
   RESTAURANTS: "restaurants",
   FAVORITE_IDS: "favoriteRestaurantIds",
   FILTERS: "filters",
+  CURRENT_TAB: "currentTab",
 } as const;
 
 type Filters = {
@@ -38,9 +39,10 @@ export const storage = {
   set filters(filters: Filters) {
     localStorage.setItem(STORAGE_KEYS.FILTERS, JSON.stringify(filters));
   },
-
-  /** 초기화 */
-  clear() {
-    Object.values(STORAGE_KEYS).forEach((key) => localStorage.removeItem(key));
+  get currentTab(): TabKey {
+    return (localStorage.getItem(STORAGE_KEYS.CURRENT_TAB) as TabKey) || "ALL";
+  },
+  set currentTab(tab: TabKey) {
+    localStorage.setItem(STORAGE_KEYS.CURRENT_TAB, tab);
   },
 };

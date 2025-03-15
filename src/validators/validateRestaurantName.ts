@@ -1,5 +1,5 @@
 import { NAME_LENGTH } from "../components/modal/AddRestaurantModal/RestaurantName.js";
-import { Restaurant } from "../entities/restaurant.js";
+import { Restaurant } from "../entities";
 import throwError from "./throwError.js";
 
 const validateRestaurantName = (name: Restaurant["name"]) => {

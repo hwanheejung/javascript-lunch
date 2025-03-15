@@ -1,6 +1,6 @@
 import { PropsType } from "../../../../types/common.js";
-import { Restaurant } from "../../../entities/restaurant.js";
-import { isError } from "../../../utils/typeGuards.js";
+import { Restaurant } from "../../../entities";
+import { isError } from "../../../utils";
 import validateRestaurantForm from "../../../validators/validateRestaurantForm.js";
 import Modal from "../Modal.js";
 import Category from "./Category.js";

@@ -1,5 +1,5 @@
 import { PropsType, StateType } from "../../../types/common.js";
-import { isHTMLElement } from "../../utils/typeGuards.js";
+import { isHTMLElement } from "../../utils";
 import { Component } from "../core";
 
 interface ModalState extends StateType {

@@ -1,4 +1,4 @@
-import { CategoryKey, SortByKey } from "../entities/restaurant.js";
+import { CategoryKey, SortByKey } from "../entities";
 
 export const handleCategoryFilterChange = (instance: any, event: Event) => {
   const selectedValue = (event.target as HTMLSelectElement).value;

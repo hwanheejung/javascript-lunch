@@ -1,4 +1,4 @@
-import { Restaurant } from "../entities/restaurant.js";
+import { Restaurant } from "../entities";
 
 const categoryImages: Record<Restaurant["category"], string> = {
   KOREAN: "category-korean.png",

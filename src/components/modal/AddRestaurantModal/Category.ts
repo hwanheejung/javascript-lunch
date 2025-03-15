@@ -1,4 +1,4 @@
-import { CATEGORY } from "../../../entities/restaurant.js";
+import { CATEGORY } from "../../../entities";
 import FormFieldContainer from "./FormFieldContainer.js";
 
 const Category = () => {

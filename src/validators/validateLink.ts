@@ -1,4 +1,4 @@
-import { Restaurant } from "../entities/restaurant.js";
+import { Restaurant } from "../entities";
 import throwError from "./throwError.js";
 
 const urlRegex = /^(https?:\/\/)?([\w\d.-]+)\.([a-z.]{2,6})(\/[\w\d.-]*)*\/?$/i;

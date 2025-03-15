@@ -1,5 +1,5 @@
 import { MAX_DESCRIPTION_LENGTH } from "../components/modal/AddRestaurantModal/Description.js";
-import { Restaurant } from "../entities/restaurant.js";
+import { Restaurant } from "../entities";
 import throwError from "./throwError.js";
 
 const validateDescription = (description: Restaurant["description"]) => {

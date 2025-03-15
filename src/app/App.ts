@@ -4,10 +4,9 @@ import Header from "../components/Header.js";
 import RestaurantList from "../components/RestaurantList.js";
 import { Component } from "../components/core";
 import AddRestaurantModal from "../components/modal/AddRestaurantModal/index.js";
-import { favoriteIds } from "../database/favoriteIds.js";
-import { restaurants } from "../database/restaurants.js";
-import { CategoryKey, Restaurant, SortByKey } from "../entities/restaurant.js";
-import { isHTMLElement } from "../utils/typeGuards.js";
+import { favoriteIds, restaurants } from "../database";
+import { CategoryKey, Restaurant, SortByKey, TabKey } from "../entities";
+import { storage, isHTMLElement } from "../utils";
 import {
   handleCategoryFilterChange,
   handleSortByFilterChange,
@@ -20,29 +19,52 @@ interface AppState extends StateType {
   favoriteIds: Restaurant["id"][];
   categoryFilter: CategoryKey;
   sortBy: SortByKey;
-  currentTab: "ALL" | "FAVORITE";
+  currentTab: TabKey;
   restaurantListInstance: RestaurantList | null;
 }
 
 class App extends Component<AppState> {
   override setup(): void {
     this.setState({
-      restaurants: restaurants,
-      favoriteIds: favoriteIds,
-      categoryFilter: "ALL",
-      sortBy: "NAME",
-      currentTab: "ALL",
+      restaurants:
+        storage.restaurants.length > 0 ? storage.restaurants : restaurants,
+      favoriteIds:
+        storage.favoriteIds.length > 0 ? storage.favoriteIds : favoriteIds,
+      categoryFilter: storage.filters.category || "ALL",
+      sortBy: storage.filters.sortBy || "NAME",
+      currentTab: storage.currentTab || "ALL",
       restaurantListInstance: null,
     });
 
-    this.watchState("restaurants", () => this.renderRestaurantList());
-    this.watchState("categoryFilter", () => this.renderRestaurantList());
-    this.watchState("sortBy", () => this.renderRestaurantList());
+    this.watchState("restaurants", () => {
+      this.renderRestaurantList();
+      storage.restaurants = this.getState().restaurants;
+    });
+    this.watchState("favoriteIds", () => {
+      this.renderFavoriteStatesOnly();
+      storage.favoriteIds = this.getState().favoriteIds;
+    });
+    this.watchState("categoryFilter", () => {
+      this.renderRestaurantList();
+      const state = this.getState();
+      storage.filters = {
+        category: state.categoryFilter,
+        sortBy: state.sortBy,
+      };
+    });
+    this.watchState("sortBy", () => {
+      this.renderRestaurantList();
+      const state = this.getState();
+      storage.filters = {
+        category: state.categoryFilter,
+        sortBy: state.sortBy,
+      };
+    });
     this.watchState("currentTab", () => {
       this.renderFilter();
       this.renderRestaurantList();
+      storage.currentTab = this.getState().currentTab;
     });
-    this.watchState("favoriteIds", () => this.renderFavoriteStatesOnly());
 
     this.eventBindings.push(
       {
@@ -87,7 +109,7 @@ class App extends Component<AppState> {
 
   override template(): string {
     return /*html*/ `
-      ${Header()}
+      ${Header(this.getState().currentTab)}
       <main> 
         <section class="restaurant-filter-container"></section>
         <section id="restaurant-list"></section>
@@ -149,7 +171,6 @@ class App extends Component<AppState> {
             currentState.favoriteIds
           );
 
-    // $main.replaceChildren();
     const newInstance = new RestaurantList($main, {
       restaurants: data,
       deleteRestaurant: (id: Restaurant["id"]) => this.deleteRestaurant(id),

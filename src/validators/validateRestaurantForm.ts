@@ -1,4 +1,4 @@
-import { Restaurant } from "../entities/restaurant.js";
+import { Restaurant } from "../entities";
 import validateCategory from "./validateCategory.js";
 import validateDescription from "./validateDescription.js";
 import validateDistance from "./validateDistance.js";

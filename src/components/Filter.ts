@@ -1,9 +1,4 @@
-import {
-  CATEGORY,
-  CategoryKey,
-  SORTBY,
-  SortByKey,
-} from "../entities/restaurant.js";
+import { CATEGORY, CategoryKey, SORTBY, SortByKey } from "../entities";
 
 interface FilterProps {
   selectedCategory: CategoryKey;

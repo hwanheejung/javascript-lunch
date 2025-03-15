@@ -1,5 +1,5 @@
-import { CategoryKey, Restaurant, SortByKey } from "../entities/restaurant.js";
-import { pipe } from "../utils/pipe.js";
+import { CategoryKey, Restaurant, SortByKey } from "../entities";
+import { pipe } from "../utils";
 
 const getFilteredRestaurants = (
   restaurants: Restaurant[],

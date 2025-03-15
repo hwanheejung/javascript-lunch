@@ -1,4 +1,4 @@
-import { Restaurant } from "../entities/restaurant";
+import { Restaurant } from "../entities";
 
 export const favoriteIds: Restaurant["id"][] = [
   "restaurant-1",

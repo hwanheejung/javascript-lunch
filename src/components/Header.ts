@@ -1,4 +1,6 @@
-const Header = () => {
+import { TabKey } from "../entities";
+
+const Header = (currentTab: TabKey) => {
   return /*html*/ `
     <header class="gnb">
       <h1 class="gnb__title text-title">점심 뭐 먹지</h1>
@@ -7,8 +9,12 @@ const Header = () => {
       </button>
     </header>
     <div id="tabBar">
-      <button class="active" data-tab="ALL" data-action="set-tab" data-testid="all-tab">전체</button>
-      <button data-tab="FAVORITE" data-action="set-tab" data-testid="favorite-tab">즐겨찾기</button>
+      <button class="${
+        currentTab === "ALL" ? "active" : ""
+      }" data-tab="ALL" data-action="set-tab" data-testid="all-tab">전체</button>
+      <button class="${
+        currentTab === "FAVORITE" ? "active" : ""
+      }" data-tab="FAVORITE" data-action="set-tab" data-testid="favorite-tab">즐겨찾기</button>
     </div> 
   `;
 };

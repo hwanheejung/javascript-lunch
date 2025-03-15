@@ -1,4 +1,4 @@
-import { Restaurant } from "../entities/restaurant.js";
+import { Restaurant } from "../entities";
 
 export const restaurants: Restaurant[] = [
   {
