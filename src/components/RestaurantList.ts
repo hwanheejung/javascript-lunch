@@ -3,7 +3,7 @@ import { Restaurant } from "../entities";
 import { isHTMLElement } from "../utils";
 import RestaurantItem from "./RestaurantItem.js";
 import { Component } from "./core";
-import RestaurantDetailModal from "./modal/RestaurantDetailModal/index.js";
+import { RestaurantDetailModal } from "./modal";
 
 interface RestaurantListProps extends PropsType {
   restaurants: Restaurant[];

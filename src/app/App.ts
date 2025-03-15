@@ -3,18 +3,18 @@ import Filter from "../components/Filter.js";
 import Header from "../components/Header.js";
 import RestaurantList from "../components/RestaurantList.js";
 import { Component } from "../components/core";
-import AddRestaurantModal from "../components/modal/AddRestaurantModal/index.js";
+import { AddRestaurantModal } from "../components/modal";
 import { favoriteIds, restaurants } from "../database";
 import { CategoryKey, Restaurant, SortByKey, TabKey } from "../entities";
-import { storage, isHTMLElement } from "../utils";
+import { isHTMLElement, storage } from "../utils";
 import {
   handleCategoryFilterChange,
   handleSortByFilterChange,
   handleTabChange,
 } from "./eventHandlers.js";
-import { getFavoriteRestaurants, getRestaurants } from "./helpers.js";
+import { getRestaurantsByTab } from "./helpers.js";
 
-interface AppState extends StateType {
+export interface AppState extends StateType {
   restaurants: Restaurant[];
   favoriteIds: Restaurant["id"][];
   categoryFilter: CategoryKey;
@@ -159,20 +159,8 @@ class App extends Component<AppState> {
       this.setState({ restaurantListInstance: null });
     }
 
-    const currentState = this.getState();
-    const data =
-      currentState.currentTab === "ALL"
-        ? getRestaurants(
-            currentState.categoryFilter,
-            currentState.sortBy
-          )(currentState.restaurants)
-        : getFavoriteRestaurants(
-            currentState.restaurants,
-            currentState.favoriteIds
-          );
-
     const newInstance = new RestaurantList($main, {
-      restaurants: data,
+      restaurants: getRestaurantsByTab(this.getState()),
       deleteRestaurant: (id: Restaurant["id"]) => this.deleteRestaurant(id),
       getIsFavorite: (id: Restaurant["id"]) =>
         this.getState().favoriteIds.includes(id),
@@ -190,17 +178,14 @@ class App extends Component<AppState> {
         const icon = item.querySelector<HTMLImageElement>(
           ".restaurant__favorite-button img"
         );
-        if (icon && id) {
-          const isFavorite = favoriteIds.includes(id);
-          icon.setAttribute(
-            "src",
-            `./icons/${
-              isFavorite
-                ? "favorite-icon-filled.png"
-                : "favorite-icon-lined.png"
-            }`
-          );
-        }
+        if (!icon || !id) return;
+        const isFavorite = favoriteIds.includes(id);
+        icon.setAttribute(
+          "src",
+          `./icons/${
+            isFavorite ? "favorite-icon-filled.png" : "favorite-icon-lined.png"
+          }`
+        );
       });
   }
 }
