@@ -23,7 +23,7 @@ describe("음식점 정보 입력하는 모달에 대한 E2E 테스트", () => {
 
   it("모달의 입력폼에 음식점 정보를 입력하고 확인하기 버튼을 클릭하여 음식점 정보를 추가할 수 있다.", () => {
     cy.get('[data-testid="category"]').select("한식");
-    cy.get('[data-testid="restaurant-name"]').type("맛있는 떡볶이");
+    cy.get('[data-testid="restaurant-name"]').type("가나다");
     cy.get('[data-testid="distance"]').select("5");
     cy.get('[data-testid="description"]').type("맛있는 떡볶이입니다");
     cy.get('[data-testid="link"]').type("https://www.google.com");
@@ -35,7 +35,7 @@ describe("음식점 정보 입력하는 모달에 대한 E2E 테스트", () => {
     cy.get('[data-testid="restaurant-list"')
       .children()
       .first()
-      .should("contain.text", "맛있는 떡볶이");
+      .should("contain.text", "가나다");
   });
 
   it("모달의 입력폼에 음식점 정보를 입력하지 않고 추가하기 버튼을 클릭하면 경고창이 뜬다.", () => {
