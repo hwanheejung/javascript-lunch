@@ -15,7 +15,6 @@ describe("음식점 정보 입력하는 모달에 대한 E2E 테스트", () => {
 
   it("모달의 취소하기 버튼을 클릭하여 닫을 수 있다.", () => {
     cy.get('[data-testid="cancel-submit-restaurant-form"]').click();
-
     cy.get('[data-testid="modal"]').should("not.exist");
   });
 

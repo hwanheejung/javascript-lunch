@@ -52,4 +52,12 @@ export const restaurants: Restaurant[] = [
     description: "멕시칸 캐주얼 그릴",
     link: "https://naver.me/G6DyD9tg",
   },
+  {
+    id: "restaurant-7",
+    category: "KOREAN",
+    name: "맛있는 한식",
+    distance: 5,
+    description: "한식한식",
+    link: "https://naver.me/G6DyD9tg",
+  },
 ];

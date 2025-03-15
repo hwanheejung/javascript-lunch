@@ -12,7 +12,7 @@ interface FilterProps {
 
 const Filter = ({ selectedCategory, selectedSortBy }: FilterProps) => {
   return /*html*/ `
-    <select name="category" id="category-filter" class="restaurant-filter" data-action="set-category-filter">
+    <select name="category" id="category-filter" class="restaurant-filter" data-action="set-category-filter" data-testid="filter-category">
     ${Object.entries(CATEGORY)
       .map(
         ([key, label]) =>
@@ -22,7 +22,7 @@ const Filter = ({ selectedCategory, selectedSortBy }: FilterProps) => {
       )
       .join("")}          
     </select>
-    <select name="sorting" id="sorting-filter" class="restaurant-filter" data-action="set-sortBy-filter">
+    <select name="sorting" id="sorting-filter" class="restaurant-filter" data-action="set-sortBy-filter" data-testid="filter-sortBy">
     ${Object.entries(SORTBY)
       .map(
         ([key, label]) =>

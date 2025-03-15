@@ -27,7 +27,7 @@ const Name = (name: Restaurant["name"]) => {
 
 const Distance = (distance: Restaurant["distance"]) => {
   return /* html */ `
-    <span class="restaurant__distance text-body">캠퍼스부터 ${distance}분 내</span>
+    <span class="restaurant__distance text-body" data-testid="restaurant-distance" data-distance="${distance}">캠퍼스부터 ${distance}분 내</span>
   `;
 };
 
