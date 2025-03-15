@@ -55,43 +55,80 @@ const TAB = {
   ALL: "전체",
   FAVORITE: "즐겨찾기"
 };
+const e = (n, ...r) => (...t) => {
+  const e2 = [...r, ...t];
+  return n(...e2);
+};
+function c(n, ...r) {
+  return (t) => r.reduce((n2, r2) => r2(n2), n(t));
+}
+const renderOption = (selectedKey, [key, label]) => `<option value="${key}" ${key === selectedKey ? "selected" : ""}>${label}</option>`;
+const renderOptions = (entries, selectedKey) => entries.map(e(renderOption, selectedKey)).join("");
+const renderSelect = ({
+  name,
+  id,
+  action,
+  testId,
+  entries,
+  selectedKey
+}) => (
+  /*html*/
+  `
+    <select name="${name}" id="${id}" class="restaurant-filter"
+      data-action="${action}" data-testid="${testId}">
+      ${renderOptions(entries, selectedKey)}
+    </select>
+  `
+);
 const Filter = ({ selectedCategory, selectedSortBy }) => {
   return (
     /*html*/
     `
-    <select name="category" id="category-filter" class="restaurant-filter" data-action="set-category-filter" data-testid="filter-category">
-    ${Object.entries(CATEGORY).map(
-      ([key, label]) => `<option value="${key}" ${key === selectedCategory && "selected"}>${label}</option>`
-    ).join("")}          
-    </select>
-    <select name="sorting" id="sorting-filter" class="restaurant-filter" data-action="set-sortBy-filter" data-testid="filter-sortBy">
-    ${Object.entries(SORTBY).map(
-      ([key, label]) => `<option value="${key}" ${key === selectedSortBy && "selected"}>${label}</option>`
-    ).join("")}    
-    </select>
+    ${renderSelect({
+      name: "category",
+      id: "category-filter",
+      action: "set-category-filter",
+      testId: "filter-category",
+      entries: Object.entries(CATEGORY),
+      selectedKey: selectedCategory
+    })}
+    ${renderSelect({
+      name: "sorting",
+      id: "sorting-filter",
+      action: "set-sortBy-filter",
+      testId: "filter-sortBy",
+      entries: Object.entries(SORTBY),
+      selectedKey: selectedSortBy
+    })}
   `
   );
+};
+const renderTabButton = (currentTab, key, label, testId) => `<button class="${currentTab === key ? "active" : ""}"
+      data-tab="${key}" data-action="set-tab" data-testid="${testId}">
+      ${label}
+    </button>`;
+const renderTabBar = (currentTab) => {
+  const renderTabButtonFor = e(renderTabButton, currentTab);
+  return `
+      <div id="tabBar">
+        ${renderTabButtonFor("ALL", TAB.ALL, "all-tab")}
+        ${renderTabButtonFor("FAVORITE", TAB.FAVORITE, "favorite-tab")}
+      </div>`;
 };
 const Header = (currentTab) => {
   return (
     /*html*/
     `
-    <header class="gnb">
-      <h1 class="gnb__title text-title">점심 뭐 먹지</h1>
-      <button type="button" class="gnb__button" aria-label="음식점 추가" data-testid="open-add-restaurant-modal-button">
-        <img src="./icons/add-button.png" alt="음식점 추가">
-      </button>
-    </header>
-    <div id="tabBar">
-      <button class="${currentTab === "ALL" ? "active" : ""}" data-tab="ALL" data-action="set-tab" data-testid="all-tab">${TAB.ALL}</button>
-      <button class="${currentTab === "FAVORITE" ? "active" : ""}" data-tab="FAVORITE" data-action="set-tab" data-testid="favorite-tab">${TAB.FAVORITE}</button>
-    </div> 
-  `
+      <header class="gnb">
+        <h1 class="gnb__title text-title">점심 뭐 먹지</h1>
+        <button type="button" class="gnb__button" aria-label="음식점 추가" data-testid="open-add-restaurant-modal-button">
+          <img src="./icons/add-button.png" alt="음식점 추가">
+        </button>
+      </header>
+      ${renderTabBar(currentTab)}
+    `
   );
 };
-function pipe(firstFn, ...fns) {
-  return (arg) => fns.reduce((acc, fn) => fn(acc), firstFn(arg));
-}
 const STORAGE_KEYS = {
   RESTAURANTS: "restaurants",
   FAVORITE_IDS: "favoriteRestaurantIds",
@@ -301,175 +338,6 @@ class Component {
     this.componentDidMount();
   }
 }
-class Modal extends Component {
-  constructor() {
-    super(...arguments);
-    __publicField(this, "handleOpen");
-    __publicField(this, "triggerSelectors", []);
-    __publicField(this, "$triggerButtons", []);
-  }
-  setup() {
-    this.setState({
-      isOpen: false
-    });
-    this.watchState("isOpen", () => this.initialRender());
-    this.eventBindings.push({
-      action: "close-modal",
-      eventType: "click",
-      handler: () => this.close()
-    });
-    this.handleOpen = () => this.open();
-  }
-  contents() {
-    return "";
-  }
-  setupTriggerButtons(selectors = []) {
-    this.triggerSelectors = selectors;
-    if (!this.triggerSelectors.length) return;
-    this.$triggerButtons = this.triggerSelectors.map((selector) => Array.from(document.querySelectorAll(selector))).flat().filter((el) => isHTMLElement(el));
-    this.$triggerButtons.forEach((button) => {
-      button.removeEventListener("click", this.handleOpen);
-      button.addEventListener("click", this.handleOpen);
-    });
-  }
-  template() {
-    if (!this.getState().isOpen) return "";
-    return (
-      /* html */
-      `
-      <div class="modal" data-testid="modal">
-        <div class="modal-backdrop" data-action="close-modal" data-testid="modal-backdrop"></div>
-        <div id="modal-container" class="modal-container">
-          ${this.contents()}
-        </div>
-      </div>
-    `
-    );
-  }
-  open() {
-    if (!this.getState().isOpen) {
-      this.setState({ isOpen: true });
-    }
-  }
-  close() {
-    if (this.getState().isOpen) {
-      this.setState({ isOpen: false });
-      this.$target.replaceChildren();
-      this.destroy();
-    }
-  }
-}
-class RestaurantDetailModal extends Modal {
-  setup() {
-    super.setup();
-    this.eventBindings.push(
-      {
-        action: `delete-restaurant-${this.props.restaurantId}`,
-        eventType: "click",
-        handler: () => this.handleDelete()
-      },
-      {
-        action: "toggle-favorite",
-        eventType: "click",
-        handler: () => this.props.toggleFavorite()
-      }
-    );
-  }
-  handleDelete() {
-    this.props.delete(this.props.restaurantId);
-    this.close();
-  }
-  contents() {
-    const { restaurants: restaurants2, restaurantId } = this.props;
-    const data = restaurants2.find(({ id: id2 }) => id2 === restaurantId);
-    if (!data) return "";
-    const { id, category, name, distance, description, link } = data;
-    return (
-      /* html */
-      `
-        <div class="restaurant restaurant-detailModal" data-testid="restaurant-detail-modal">
-            <div style="display: flex; width: 100%; justify-content: space-between;">
-              ${RestaurantItem.CategoryIcon(category)}
-              ${RestaurantItem.FavoriteButton(id, this.props.isFavorite())}
-            </div>
-            <div class="restaurant__info">
-                ${RestaurantItem.Name(name)}
-                ${RestaurantItem.Distance(distance)}
-                ${RestaurantItem.Description(description)}
-                ${RestaurantItem.Link(link)}
-            </div>
-        </div>
-        <div class="button-container">
-          <button data-action="delete-restaurant-${this.props.restaurantId}" class="button button--secondary text-caption" data-testid="delete-restaurant">삭제하기</button>
-          <button data-action="close-modal" class="button button--primary text-caption" data-testid="close-restaurant-detail-modal">닫기</button>
-        </div>
-    `
-    );
-  }
-}
-class RestaurantList extends Component {
-  setup() {
-    this.eventBindings.push(
-      {
-        action: "select-restaurant",
-        eventType: "click",
-        handler: (event) => this.selectRestaurant(event)
-      },
-      {
-        action: "toggle-favorite",
-        eventType: "click",
-        handler: (event) => {
-          event.stopPropagation();
-          const $modal = document.querySelector("#modal");
-          if (!isHTMLElement($modal)) return;
-          const id = this.selectedId(event);
-          this.props.toggleFavorite(id);
-        }
-      }
-    );
-  }
-  selectedId(event) {
-    const $li = event.target.closest("li");
-    if (!isHTMLElement($li)) return;
-    return $li.dataset.id;
-  }
-  selectRestaurant(event) {
-    const $modal = document.querySelector("#modal");
-    if (!isHTMLElement($modal)) return;
-    const id = this.selectedId(event);
-    new RestaurantDetailModal($modal, {
-      restaurantId: id,
-      restaurants: this.props.restaurants,
-      isFavorite: () => this.props.getIsFavorite(id),
-      delete: (id2) => this.props.deleteRestaurant(id2),
-      toggleFavorite: () => this.props.toggleFavorite(id)
-    }).open();
-  }
-  template() {
-    return (
-      /* html */
-      `
-    <section class="restaurant-list-container" data-testid="restaurant-list">
-      <ul class="restaurant-list">
-        ${this.props.restaurants.map(
-        ({ id, category, name, distance, description }) => `
-            <li class="restaurant" data-id="${id}" data-action="select-restaurant">
-              ${RestaurantItem.CategoryIcon(category)}
-              <div class="restaurant__info">
-                ${RestaurantItem.Name(name)}
-                ${RestaurantItem.Distance(distance)}
-                ${RestaurantItem.Description(description)}
-              </div>
-              ${RestaurantItem.FavoriteButton(id, this.props.getIsFavorite(id))}
-            </li>
-          `
-      ).join("")}
-      </ul>
-    </section>
-  `
-    );
-  }
-}
 const throwError = ({ condition, message }) => {
   if (condition) {
     throw new Error(message);
@@ -591,6 +459,67 @@ const validateRestaurantForm = (values) => {
   if (description) validateDescription(description);
   if (link) validateLink(link);
 };
+class Modal extends Component {
+  constructor() {
+    super(...arguments);
+    __publicField(this, "handleOpen");
+    __publicField(this, "triggerSelectors", []);
+    __publicField(this, "$triggerButtons", []);
+  }
+  setup() {
+    this.setState({
+      isOpen: false
+    });
+    this.watchState("isOpen", () => this.initialRender());
+    this.eventBindings.push({
+      action: "close-modal",
+      eventType: "click",
+      handler: () => this.close()
+    });
+    this.handleOpen = () => this.open();
+  }
+  contents() {
+    return "";
+  }
+  setupTriggerButtons(selectors = []) {
+    this.triggerSelectors = selectors;
+    const runIfTriggersExist = this.triggerSelectors.length ? () => {
+      this.$triggerButtons = this.triggerSelectors.map((selector) => Array.from(document.querySelectorAll(selector))).flat().filter((el) => isHTMLElement(el));
+      this.$triggerButtons.forEach((button) => {
+        button.removeEventListener("click", this.handleOpen);
+        button.addEventListener("click", this.handleOpen);
+      });
+    } : () => {
+    };
+    runIfTriggersExist();
+  }
+  template() {
+    if (!this.getState().isOpen) return "";
+    return (
+      /* html */
+      `
+      <div class="modal" data-testid="modal">
+        <div class="modal-backdrop" data-action="close-modal" data-testid="modal-backdrop"></div>
+        <div id="modal-container" class="modal-container">
+          ${this.contents()}
+        </div>
+      </div>
+    `
+    );
+  }
+  open() {
+    if (!this.getState().isOpen) {
+      this.setState({ isOpen: true });
+    }
+  }
+  close() {
+    if (this.getState().isOpen) {
+      this.setState({ isOpen: false });
+      this.$target.replaceChildren();
+      this.destroy();
+    }
+  }
+}
 const Category = () => {
   const contents = (
     /*html*/
@@ -673,6 +602,117 @@ class AddRestaurantModal extends Modal {
         </div>
       </form>
     `
+    );
+  }
+}
+class RestaurantDetailModal extends Modal {
+  setup() {
+    super.setup();
+    this.eventBindings.push(
+      {
+        action: `delete-restaurant-${this.props.restaurantId}`,
+        eventType: "click",
+        handler: () => this.handleDelete()
+      },
+      {
+        action: "toggle-favorite",
+        eventType: "click",
+        handler: () => this.props.toggleFavorite()
+      }
+    );
+  }
+  handleDelete() {
+    this.props.delete(this.props.restaurantId);
+    this.close();
+  }
+  contents() {
+    const { restaurants: restaurants2, restaurantId } = this.props;
+    const data = restaurants2.find(({ id: id2 }) => id2 === restaurantId);
+    if (!data) return "";
+    const { id, category, name, distance, description, link } = data;
+    return (
+      /* html */
+      `
+        <div class="restaurant restaurant-detailModal" data-testid="restaurant-detail-modal">
+            <div style="display: flex; width: 100%; justify-content: space-between;">
+              ${RestaurantItem.CategoryIcon(category)}
+              ${RestaurantItem.FavoriteButton(id, this.props.isFavorite())}
+            </div>
+            <div class="restaurant__info">
+                ${RestaurantItem.Name(name)}
+                ${RestaurantItem.Distance(distance)}
+                ${RestaurantItem.Description(description)}
+                ${RestaurantItem.Link(link)}
+            </div>
+        </div>
+        <div class="button-container">
+          <button data-action="delete-restaurant-${this.props.restaurantId}" class="button button--secondary text-caption" data-testid="delete-restaurant">삭제하기</button>
+          <button data-action="close-modal" class="button button--primary text-caption" data-testid="close-restaurant-detail-modal">닫기</button>
+        </div>
+    `
+    );
+  }
+}
+class RestaurantList extends Component {
+  setup() {
+    this.eventBindings.push(
+      {
+        action: "select-restaurant",
+        eventType: "click",
+        handler: (event) => this.selectRestaurant(event)
+      },
+      {
+        action: "toggle-favorite",
+        eventType: "click",
+        handler: (event) => {
+          event.stopPropagation();
+          const $modal = document.querySelector("#modal");
+          if (!isHTMLElement($modal)) return;
+          const id = this.selectedId(event);
+          this.props.toggleFavorite(id);
+        }
+      }
+    );
+  }
+  selectedId(event) {
+    const $li = event.target.closest("li");
+    if (!isHTMLElement($li)) return;
+    return $li.dataset.id;
+  }
+  selectRestaurant(event) {
+    const $modal = document.querySelector("#modal");
+    if (!isHTMLElement($modal)) return;
+    const id = this.selectedId(event);
+    new RestaurantDetailModal($modal, {
+      restaurantId: id,
+      restaurants: this.props.restaurants,
+      isFavorite: () => this.props.getIsFavorite(id),
+      delete: (id2) => this.props.deleteRestaurant(id2),
+      toggleFavorite: () => this.props.toggleFavorite(id)
+    }).open();
+  }
+  template() {
+    return (
+      /* html */
+      `
+    <section class="restaurant-list-container" data-testid="restaurant-list">
+      <ul class="restaurant-list">
+        ${this.props.restaurants.map(
+        ({ id, category, name, distance, description }) => `
+            <li class="restaurant" data-id="${id}" data-action="select-restaurant">
+              ${RestaurantItem.CategoryIcon(category)}
+              <div class="restaurant__info">
+                ${RestaurantItem.Name(name)}
+                ${RestaurantItem.Distance(distance)}
+                ${RestaurantItem.Description(description)}
+              </div>
+              ${RestaurantItem.FavoriteButton(id, this.props.getIsFavorite(id))}
+            </li>
+          `
+      ).join("")}
+      </ul>
+    </section>
+  `
     );
   }
 }
@@ -765,7 +805,7 @@ const getSortedRestaurants = (restaurants2, sortBy) => {
     return 0;
   });
 };
-const getRestaurants = (categoryFilter, sortBy) => pipe(
+const getAllRestaurants = (categoryFilter, sortBy) => c(
   (restaurants2) => getFilteredRestaurants(restaurants2, categoryFilter),
   (filteredData) => getSortedRestaurants(filteredData, sortBy)
 );
@@ -773,6 +813,9 @@ const getFavoriteRestaurants = (restaurants2, favoriteIds2) => {
   return restaurants2.filter(
     (restaurant) => favoriteIds2.includes(restaurant.id)
   );
+};
+const getRestaurantsByTab = (state) => {
+  return state.currentTab === "ALL" ? getAllRestaurants(state.categoryFilter, state.sortBy)(state.restaurants) : getFavoriteRestaurants(state.restaurants, state.favoriteIds);
 };
 class App extends Component {
   setup() {
@@ -895,16 +938,8 @@ class App extends Component {
       (_a = this.getState().restaurantListInstance) == null ? void 0 : _a.destroy();
       this.setState({ restaurantListInstance: null });
     }
-    const currentState = this.getState();
-    const data = currentState.currentTab === "ALL" ? getRestaurants(
-      currentState.categoryFilter,
-      currentState.sortBy
-    )(currentState.restaurants) : getFavoriteRestaurants(
-      currentState.restaurants,
-      currentState.favoriteIds
-    );
     const newInstance = new RestaurantList($main, {
-      restaurants: data,
+      restaurants: getRestaurantsByTab(this.getState()),
       deleteRestaurant: (id) => this.deleteRestaurant(id),
       getIsFavorite: (id) => this.getState().favoriteIds.includes(id),
       toggleFavorite: (id) => this.toggleFavorite(id)
@@ -918,13 +953,12 @@ class App extends Component {
       const icon = item.querySelector(
         ".restaurant__favorite-button img"
       );
-      if (icon && id) {
-        const isFavorite = favoriteIds2.includes(id);
-        icon.setAttribute(
-          "src",
-          `./icons/${isFavorite ? "favorite-icon-filled.png" : "favorite-icon-lined.png"}`
-        );
-      }
+      if (!icon || !id) return;
+      const isFavorite = favoriteIds2.includes(id);
+      icon.setAttribute(
+        "src",
+        `./icons/${isFavorite ? "favorite-icon-filled.png" : "favorite-icon-lined.png"}`
+      );
     });
   }
 }
