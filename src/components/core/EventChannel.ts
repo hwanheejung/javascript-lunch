@@ -4,7 +4,7 @@ export interface EventBinding {
   handler: (event: Event) => void;
 }
 
-export class EventBus {
+export class EventChannel {
   private $target: HTMLElement;
   private abortController: AbortController;
 

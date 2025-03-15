@@ -1,6 +1,6 @@
 import { PropsType, StateType } from "../../../types/common";
 import { StateStore } from "./StateStore";
-import { EventBinding, EventBus } from "./EventChannel";
+import { EventBinding, EventChannel } from "./EventChannel";
 
 abstract class Component<
   State extends StateType,
@@ -10,14 +10,14 @@ abstract class Component<
   protected props: Props;
   protected stateStore: StateStore<State>;
   protected eventBindings: EventBinding[] = [];
-  protected eventBus: EventBus;
+  protected eventChannel: EventChannel;
 
   constructor($target: HTMLElement, props?: Props) {
     this.$target = $target;
     this.props = (props ?? {}) as Props;
     // 초기 상태는 하위 클래스에서 setup()을 통해 설정
     this.stateStore = new StateStore<State>({} as State);
-    this.eventBus = new EventBus(this.$target);
+    this.eventChannel = new EventChannel(this.$target);
 
     this.setup();
     this.initialRender();
@@ -43,11 +43,11 @@ abstract class Component<
   }
 
   protected bindEvents(): void {
-    this.eventBus.bindEvents(this.eventBindings);
+    this.eventChannel.bindEvents(this.eventBindings);
   }
 
   public destroy(): void {
-    this.eventBus.destroy();
+    this.eventChannel.destroy();
   }
 
   protected render(): void {

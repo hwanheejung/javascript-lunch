@@ -1,4 +1,4 @@
-import { TabKey } from "../entities";
+import { TAB, TabKey } from "../entities";
 
 const Header = (currentTab: TabKey) => {
   return /*html*/ `
@@ -11,10 +11,14 @@ const Header = (currentTab: TabKey) => {
     <div id="tabBar">
       <button class="${
         currentTab === "ALL" ? "active" : ""
-      }" data-tab="ALL" data-action="set-tab" data-testid="all-tab">전체</button>
+      }" data-tab="ALL" data-action="set-tab" data-testid="all-tab">${
+    TAB.ALL
+  }</button>
       <button class="${
         currentTab === "FAVORITE" ? "active" : ""
-      }" data-tab="FAVORITE" data-action="set-tab" data-testid="favorite-tab">즐겨찾기</button>
+      }" data-tab="FAVORITE" data-action="set-tab" data-testid="favorite-tab">${
+    TAB.FAVORITE
+  }</button>
     </div> 
   `;
 };
