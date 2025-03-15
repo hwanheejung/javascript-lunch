@@ -1,6 +1,6 @@
 import { StateType } from "../../types/common.js";
-import Filter from "../components/Filter.js";
-import Header from "../components/Header.js";
+import Filter from "../components/Filter";
+import Header from "../components/Header";
 import RestaurantList from "../components/RestaurantList.js";
 import { Component } from "../components/core";
 import { AddRestaurantModal } from "../components/modal";
