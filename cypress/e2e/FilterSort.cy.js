@@ -22,7 +22,7 @@ describe("음식점 목록 필터 및 정렬 기능 테스트", () => {
       const names = $items.toArray().map((el) => {
         return (
           el
-            .querySelector('[data-testid="restaurant-name"]')
+            .querySelector('[data-testid="restaurant-item-name"]')
             ?.textContent?.trim() || ""
         );
       });
@@ -35,7 +35,9 @@ describe("음식점 목록 필터 및 정렬 기능 테스트", () => {
     cy.get('[data-testid="filter-sortBy"]').select("DISTANCE");
     cy.get('[data-testid="restaurant-list"] li').then(($items) => {
       const distances = $items.toArray().map((el) => {
-        const span = el.querySelector('[data-testid="restaurant-distance"]');
+        const span = el.querySelector(
+          '[data-testid="restaurant-item-distance"]'
+        );
         return span ? Number(span.getAttribute("data-distance")) : NaN;
       });
       const sortedDistances = [...distances].sort((a, b) => a - b);
@@ -53,7 +55,7 @@ describe("음식점 목록 필터 및 정렬 기능 테스트", () => {
       const names = $items.toArray().map((el) => {
         return (
           el
-            .querySelector('[data-testid="restaurant-name"]')
+            .querySelector('[data-testid="restaurant-item-name"]')
             ?.textContent?.trim() || ""
         );
       });

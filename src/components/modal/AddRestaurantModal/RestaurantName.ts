@@ -7,7 +7,7 @@ export const NAME_LENGTH = {
 
 const RestaurantName = () => {
   const contents = /*html*/ `
-    <input type="text" name="name" id="name" required minlength="${NAME_LENGTH.MIN}" maxlength="${NAME_LENGTH.MAX}" data-testid="restaurant-name"/>
+    <input type="text" name="name" id="name" required minlength="${NAME_LENGTH.MIN}" maxlength="${NAME_LENGTH.MAX}" data-testid="restaurant-name-input"/>
   `;
 
   return FormFieldContainer({

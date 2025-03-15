@@ -42,7 +42,7 @@ class RestaurantDetailModal extends Modal<RestaurantDetailModalProps> {
     const { id, category, name, distance, description, link } = data;
 
     return /* html */ `
-        <div class="restaurant restaurant-detailModal">
+        <div class="restaurant restaurant-detailModal" data-testid="restaurant-detail-modal">
             <div style="display: flex; width: 100%; justify-content: space-between;">
               ${RestaurantItem.CategoryIcon(category)}
               ${RestaurantItem.FavoriteButton(id, this.props.isFavorite())}
@@ -57,8 +57,8 @@ class RestaurantDetailModal extends Modal<RestaurantDetailModalProps> {
         <div class="button-container">
           <button data-action="delete-restaurant-${
             this.props.restaurantId
-          }" class="button button--secondary text-caption">삭제하기</button>
-          <button data-action="close-modal" class="button button--primary text-caption">닫기</button>
+          }" class="button button--secondary text-caption" data-testid="delete-restaurant">삭제하기</button>
+          <button data-action="close-modal" class="button button--primary text-caption" data-testid="close-restaurant-detail-modal">닫기</button>
         </div>
     `;
   }

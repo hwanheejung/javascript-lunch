@@ -14,32 +14,32 @@ const CategoryIcon = (category: Restaurant["category"]) => {
   <div class="restaurant__category">
     <img src="./icons/${
       categoryImages[category] || "category-etc.png"
-    }" alt="${category}" class="category-icon">
+    }" alt="${category}" class="category-icon" data-testid="restaurant-item-category">
   </div>
   `;
 };
 
 const Name = (name: Restaurant["name"]) => {
   return /* html */ `
-    <h3 class="restaurant__name text-subtitle">${name}</h3>
+    <h3 class="restaurant__name text-subtitle" data-testid="restaurant-item-name">${name}</h3>
   `;
 };
 
 const Distance = (distance: Restaurant["distance"]) => {
   return /* html */ `
-    <span class="restaurant__distance text-body" data-testid="restaurant-distance" data-distance="${distance}">캠퍼스부터 ${distance}분 내</span>
+    <span class="restaurant__distance text-body" data-testid="restaurant-item-distance" data-distance="${distance}">캠퍼스부터 ${distance}분 내</span>
   `;
 };
 
 const Description = (description: Restaurant["description"]) => {
   return description
-    ? `<p class="restaurant__description text-body">${description}</p>`
+    ? `<p class="restaurant__description text-body" data-testid="restaurant-item-description">${description}</p>`
     : "";
 };
 
 const Link = (link: Restaurant["link"]) => {
   return link
-    ? `<a href="${link}" class="restaurant__link" target="_blank">${link}</a>`
+    ? `<a href="${link}" class="restaurant__link" target="_blank" data-testid="restaurant-item-link">${link}</a>`
     : "";
 };
 
@@ -49,7 +49,7 @@ const FavoriteButton = (id: Restaurant["id"], isFavorite: boolean) => {
     : "favorite-icon-lined.png";
 
   return /* html */ `
-    <div class="restaurant__favorite-button" data-restaurant-id="${id}" data-action="toggle-favorite">
+    <div class="restaurant__favorite-button" data-restaurant-id="${id}" data-action="toggle-favorite" data-testid="favorite-button">
       <img src="./icons/${favoriteIcon}" alt="즐겨찾기 아이콘" />
     </div>
   `;
