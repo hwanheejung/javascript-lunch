@@ -66,17 +66,15 @@ abstract class Modal<Props extends PropsType = {}> extends Component<
   }
 
   public open() {
-    if (!this.getState().isOpen) {
-      this.setState({ isOpen: true });
-    }
+    if (this.getState().isOpen) return;
+    this.setState({ isOpen: true });
   }
 
   protected close() {
-    if (this.getState().isOpen) {
-      this.setState({ isOpen: false });
-      this.$target.replaceChildren();
-      this.destroy();
-    }
+    if (!this.getState().isOpen) return;
+    this.setState({ isOpen: false });
+    this.$target.replaceChildren();
+    this.destroy();
   }
 }
 

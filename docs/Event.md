@@ -109,7 +109,7 @@ bindEvents(eventBindings: EventBinding[]): void {
 ### 3️⃣ AbortController 활용
 
 - **문제 인식:**  
-  기존 방식은 각 이벤트 리스너를 수동으로 관리 및 해제해야 했으며, 컴포넌트 업데이트나 DOM 제거 시 메모리 누수의 위험이 있었습니다.
+  기존 방식은 각 이벤트 리스너를 수동으로 관리 및 해제해야 했으며, 컴포넌트 업데이트나 DOM 제거 시 메모리 누수의 위험이 있었음.
 
 - **해결:**
   - [AbortController](https://developer.mozilla.org/ko/docs/Web/API/AbortController)는 브라우저에서 제공하는 API로, 이벤트 리스너를 등록할 때 옵션으로 signal을 전달할 수 있음.
