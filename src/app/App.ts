@@ -2,7 +2,7 @@ import { StateType } from "../../types/common.js";
 import Filter from "../components/Filter.js";
 import Header from "../components/Header.js";
 import RestaurantList from "../components/RestaurantList.js";
-import Component from "../components/core/Component.js";
+import { Component } from "../components/core";
 import AddRestaurantModal from "../components/modal/AddRestaurantModal/index.js";
 import { favoriteIds } from "../database/favoriteIds.js";
 import { restaurants } from "../database/restaurants.js";
@@ -25,15 +25,15 @@ interface AppState extends StateType {
 }
 
 class App extends Component<AppState> {
-  override setup() {
-    this.state = {
+  override setup(): void {
+    this.setState({
       restaurants: restaurants,
       favoriteIds: favoriteIds,
       categoryFilter: "ALL",
       sortBy: "NAME",
       currentTab: "ALL",
       restaurantListInstance: null,
-    };
+    });
 
     this.watchState("restaurants", () => this.renderRestaurantList());
     this.watchState("categoryFilter", () => this.renderRestaurantList());
@@ -63,62 +63,62 @@ class App extends Component<AppState> {
     );
   }
 
-  private addRestaurant(newRestaurant: Restaurant) {
+  private addRestaurant(newRestaurant: Restaurant): void {
     this.setState({
-      restaurants: [...this.state.restaurants, newRestaurant],
+      restaurants: [...this.getState().restaurants, newRestaurant],
     });
   }
 
-  private deleteRestaurant(restaurantId: Restaurant["id"]) {
+  private deleteRestaurant(restaurantId: Restaurant["id"]): void {
     this.setState({
-      restaurants: this.state.restaurants.filter(
+      restaurants: this.getState().restaurants.filter(
         (restaurant) => restaurant.id !== restaurantId
       ),
     });
   }
 
-  private toggleFavorite(restaurantId: Restaurant["id"]) {
-    const favoriteIds = this.state.favoriteIds.includes(restaurantId)
-      ? this.state.favoriteIds.filter((id) => id !== restaurantId)
-      : [...this.state.favoriteIds, restaurantId];
-
-    this.setState({ favoriteIds });
+  private toggleFavorite(restaurantId: Restaurant["id"]): void {
+    const currentFavorites = this.getState().favoriteIds;
+    const updatedFavorites = currentFavorites.includes(restaurantId)
+      ? currentFavorites.filter((id) => id !== restaurantId)
+      : [...currentFavorites, restaurantId];
+    this.setState({ favoriteIds: updatedFavorites });
   }
 
-  override template() {
+  override template(): string {
     return /*html*/ `
-        ${Header()}
-        <main> 
-          <section class="restaurant-filter-container"></section>
-          <section id="restaurant-list"></section>
-        </main>
-        <div id="modal"></div>
+      ${Header()}
+      <main> 
+        <section class="restaurant-filter-container"></section>
+        <section id="restaurant-list"></section>
+      </main>
+      <div id="modal"></div>
     `;
   }
 
-  override componentDidMount() {
+  override componentDidMount(): void {
     this.renderFilter();
     this.renderAddRestaurantModal();
     this.renderRestaurantList();
   }
 
-  private renderFilter() {
+  private renderFilter(): void {
     const $filterContainer = document.querySelector(
       ".restaurant-filter-container"
     );
     if (!isHTMLElement($filterContainer)) return;
 
-    if (this.state.currentTab === "FAVORITE") {
+    if (this.getState().currentTab === "FAVORITE") {
       $filterContainer.innerHTML = "";
       return;
     }
     $filterContainer.innerHTML = Filter({
-      selectedCategory: this.state.categoryFilter,
-      selectedSortBy: this.state.sortBy,
+      selectedCategory: this.getState().categoryFilter,
+      selectedSortBy: this.getState().sortBy,
     });
   }
 
-  private renderAddRestaurantModal() {
+  private renderAddRestaurantModal(): void {
     const $modal = document.querySelector("#modal");
     if (!isHTMLElement($modal)) return;
 
@@ -127,38 +127,41 @@ class App extends Component<AppState> {
     });
   }
 
-  private renderRestaurantList() {
+  private renderRestaurantList(): void {
     const $main = document.querySelector("#restaurant-list");
     if (!isHTMLElement($main)) return;
 
-    if (this.state.restaurantListInstance) {
-      this.state.restaurantListInstance.destroy();
-      this.state.restaurantListInstance = null;
+    // 기존 인스턴스가 존재하면 destroy() 호출 후 null로 초기화
+    if (this.getState().restaurantListInstance) {
+      this.getState().restaurantListInstance?.destroy();
+      this.setState({ restaurantListInstance: null });
     }
 
+    const currentState = this.getState();
     const data =
-      this.state.currentTab === "ALL"
+      currentState.currentTab === "ALL"
         ? getRestaurants(
-            this.state.categoryFilter,
-            this.state.sortBy
-          )(this.state.restaurants)
+            currentState.categoryFilter,
+            currentState.sortBy
+          )(currentState.restaurants)
         : getFavoriteRestaurants(
-            this.state.restaurants,
-            this.state.favoriteIds
+            currentState.restaurants,
+            currentState.favoriteIds
           );
 
-    $main.replaceChildren();
-    this.state.restaurantListInstance = new RestaurantList($main, {
+    // $main.replaceChildren();
+    const newInstance = new RestaurantList($main, {
       restaurants: data,
       deleteRestaurant: (id: Restaurant["id"]) => this.deleteRestaurant(id),
-      favoriteIds: this.state.favoriteIds,
+      getIsFavorite: (id: Restaurant["id"]) =>
+        this.getState().favoriteIds.includes(id),
       toggleFavorite: (id: Restaurant["id"]) => this.toggleFavorite(id),
     });
+    this.setState({ restaurantListInstance: newInstance });
   }
 
-  private renderFavoriteStatesOnly() {
-    const { favoriteIds } = this.state;
-
+  private renderFavoriteStatesOnly(): void {
+    const { favoriteIds } = this.getState();
     document
       .querySelectorAll("[data-restaurant-id]")
       .forEach((item: Element) => {
@@ -166,7 +169,6 @@ class App extends Component<AppState> {
         const icon = item.querySelector<HTMLImageElement>(
           ".restaurant__favorite-button img"
         );
-
         if (icon && id) {
           const isFavorite = favoriteIds.includes(id);
           icon.setAttribute(

@@ -1,6 +1,6 @@
 import { PropsType, StateType } from "../../../types/common.js";
 import { isHTMLElement } from "../../utils/typeGuards.js";
-import Component from "../core/Component.js";
+import { Component } from "../core";
 
 interface ModalState extends StateType {
   isOpen: boolean;
@@ -15,9 +15,9 @@ abstract class Modal<Props extends PropsType = {}> extends Component<
   private $triggerButtons: HTMLElement[] = [];
 
   override setup() {
-    this.state = {
+    this.setState({
       isOpen: false,
-    };
+    });
     this.watchState("isOpen", () => this.initialRender());
 
     this.eventBindings.push({
@@ -49,7 +49,7 @@ abstract class Modal<Props extends PropsType = {}> extends Component<
   }
 
   override template() {
-    if (!this.state.isOpen) return "";
+    if (!this.getState().isOpen) return "";
     return /* html */ `
       <div class="modal" data-testid="modal">
         <div class="modal-backdrop" data-action="close-modal" data-testid="modal-backdrop"></div>
@@ -61,15 +61,16 @@ abstract class Modal<Props extends PropsType = {}> extends Component<
   }
 
   public open() {
-    if (!this.state.isOpen) {
+    if (!this.getState().isOpen) {
       this.setState({ isOpen: true });
     }
   }
 
   protected close() {
-    if (this.state.isOpen) {
+    if (this.getState().isOpen) {
       this.setState({ isOpen: false });
       this.$target.replaceChildren();
+      this.destroy();
     }
   }
 }

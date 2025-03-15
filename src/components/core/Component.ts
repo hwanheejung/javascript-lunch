@@ -1,13 +1,6 @@
 import { PropsType, StateType } from "../../../types/common";
-
-type StateKeyOf<T> = keyof T;
-type UIUpdateCallback = () => void;
-
-interface EventBinding {
-  action: string;
-  eventType: keyof HTMLElementEventMap;
-  handler: (event: Event) => void;
-}
+import { StateStore } from "./StateStore";
+import { EventBinding, EventBus } from "./EventChannel";
 
 abstract class Component<
   State extends StateType,
@@ -15,90 +8,46 @@ abstract class Component<
 > {
   protected $target: HTMLElement;
   protected props: Props;
-  protected state: State;
-
-  #changedKeys: Set<StateKeyOf<State>> = new Set();
-  #stateToUIMap: Partial<Record<StateKeyOf<State>, UIUpdateCallback>> = {};
+  protected stateStore: StateStore<State>;
   protected eventBindings: EventBinding[] = [];
-  #abortController: AbortController = new AbortController();
+  protected eventBus: EventBus;
 
   constructor($target: HTMLElement, props?: Props) {
     this.$target = $target;
     this.props = (props ?? {}) as Props;
-    this.state = {} as State;
+    // 초기 상태는 하위 클래스에서 setup()을 통해 설정
+    this.stateStore = new StateStore<State>({} as State);
+    this.eventBus = new EventBus(this.$target);
 
     this.setup();
     this.initialRender();
-    this.#bindEvents();
+    this.bindEvents();
   }
 
-  protected setup(): void {}
+  protected abstract setup(): void;
 
   protected componentDidMount(): void {}
-  protected componentDidUpdate(changedKeys: StateKeyOf<State>[]): void {
-    changedKeys.forEach((key) => {
-      const callback = this.#stateToUIMap[key];
-      if (callback) callback();
-    });
-  }
+  protected componentDidUpdate(_changedKeys: (keyof State)[]): void {}
 
   protected setState(newState: Partial<State>): void {
-    const prevState: State = { ...this.state };
-    this.state = { ...this.state, ...newState };
-
-    // 변경된 state 키 찾기
-    this.#changedKeys.clear();
-
-    (Object.keys(newState) as (keyof State)[]).forEach((key) => {
-      if (prevState[key] !== newState[key]) {
-        this.#changedKeys.add(key);
-      }
-    });
-
-    this.componentDidUpdate([...this.#changedKeys]);
+    const changedKeys = this.stateStore.setState(newState);
+    this.componentDidUpdate(changedKeys);
   }
 
-  /** 상태 변경 감시 */
-  protected watchState(
-    stateKey: StateKeyOf<State>,
-    callback: UIUpdateCallback
-  ): void {
-    this.#stateToUIMap[stateKey] = callback;
+  protected getState(): State {
+    return this.stateStore.getState();
   }
 
-  #bindEvents(): void {
-    // 이벤트 타입별로 그룹화
-    const eventBindingsByType = new Map<
-      string,
-      { action: string; handler: (event: Event) => void }[]
-    >();
+  protected watchState(stateKey: keyof State, callback: () => void): void {
+    this.stateStore.watchState(stateKey, callback);
+  }
 
-    this.eventBindings.forEach(({ action, eventType, handler }) => {
-      if (!eventBindingsByType.has(eventType)) {
-        eventBindingsByType.set(eventType, []);
-      }
-      eventBindingsByType.get(eventType)!.push({ action, handler });
-    });
-
-    eventBindingsByType.forEach((bindings, eventType) => {
-      this.$target.addEventListener(
-        eventType,
-        (event: Event) => {
-          const target = event.target as HTMLElement;
-          const actionElement = target.closest<HTMLElement>("[data-action]");
-          if (!actionElement || !this.$target.contains(actionElement)) return;
-          const action = actionElement.dataset.action;
-          const binding = bindings.find((b) => b.action === action);
-          if (binding) binding.handler.call(this, event);
-        },
-        { signal: this.#abortController.signal }
-      );
-    });
+  protected bindEvents(): void {
+    this.eventBus.bindEvents(this.eventBindings);
   }
 
   public destroy(): void {
-    this.#abortController.abort();
-    this.#abortController = new AbortController();
+    this.eventBus.destroy();
   }
 
   protected render(): void {
@@ -110,9 +59,7 @@ abstract class Component<
     this.componentDidMount();
   }
 
-  protected template(): string {
-    return "";
-  }
+  protected abstract template(): string;
 }
 
 export default Component;

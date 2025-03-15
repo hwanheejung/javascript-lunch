@@ -2,13 +2,13 @@ import { PropsType } from "../../types/common.js";
 import { Restaurant } from "../entities/restaurant.js";
 import { isHTMLElement } from "../utils/typeGuards.js";
 import RestaurantItem from "./RestaurantItem.js";
-import Component from "./core/Component.js";
+import { Component } from "./core";
 import RestaurantDetailModal from "./modal/RestaurantDetailModal/index.js";
 
 interface RestaurantListProps extends PropsType {
   restaurants: Restaurant[];
   deleteRestaurant: (id: Restaurant["id"]) => void;
-  favoriteIds: Restaurant["id"][];
+  getIsFavorite: (id: Restaurant["id"]) => boolean;
   toggleFavorite: (id: Restaurant["id"]) => void;
 }
 
@@ -47,10 +47,11 @@ class RestaurantList extends Component<{}, RestaurantListProps> {
     if (!isHTMLElement($modal)) return;
 
     const id = this.selectedId(event)!;
+
     new RestaurantDetailModal($modal, {
       restaurantId: id,
       restaurants: this.props.restaurants,
-      isFavorite: () => this.props.favoriteIds.includes(id),
+      isFavorite: () => this.props.getIsFavorite(id),
       delete: (id: Restaurant["id"]) => this.props.deleteRestaurant(id),
       toggleFavorite: () => this.props.toggleFavorite(id),
     }).open();
@@ -70,10 +71,7 @@ class RestaurantList extends Component<{}, RestaurantListProps> {
                 ${RestaurantItem.Distance(distance)}
                 ${RestaurantItem.Description(description)}
               </div>
-              ${RestaurantItem.FavoriteButton(
-                id,
-                this.props.favoriteIds.includes(id)
-              )}
+              ${RestaurantItem.FavoriteButton(id, this.props.getIsFavorite(id))}
             </li>
           `
           )
