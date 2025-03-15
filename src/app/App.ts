@@ -21,6 +21,7 @@ interface AppState extends StateType {
   categoryFilter: CategoryKey;
   sortBy: SortByKey;
   currentTab: "ALL" | "FAVORITE";
+  restaurantListInstance: RestaurantList | null;
 }
 
 class App extends Component<AppState> {
@@ -31,7 +32,9 @@ class App extends Component<AppState> {
       categoryFilter: "ALL",
       sortBy: "NAME",
       currentTab: "ALL",
+      restaurantListInstance: null,
     };
+
     this.watchState("restaurants", () => this.renderRestaurantList());
     this.watchState("categoryFilter", () => this.renderRestaurantList());
     this.watchState("sortBy", () => this.renderRestaurantList());
@@ -128,17 +131,24 @@ class App extends Component<AppState> {
     const $main = document.querySelector("#restaurant-list");
     if (!isHTMLElement($main)) return;
 
+    if (this.state.restaurantListInstance) {
+      this.state.restaurantListInstance.destroy();
+      this.state.restaurantListInstance = null;
+    }
+
     const data =
       this.state.currentTab === "ALL"
-        ? getRestaurants(this)(this.state.restaurants)
+        ? getRestaurants(
+            this.state.categoryFilter,
+            this.state.sortBy
+          )(this.state.restaurants)
         : getFavoriteRestaurants(
             this.state.restaurants,
-            this.state.currentTab,
             this.state.favoriteIds
           );
 
     $main.replaceChildren();
-    new RestaurantList($main, {
+    this.state.restaurantListInstance = new RestaurantList($main, {
       restaurants: data,
       deleteRestaurant: (id: Restaurant["id"]) => this.deleteRestaurant(id),
       favoriteIds: this.state.favoriteIds,
@@ -149,28 +159,26 @@ class App extends Component<AppState> {
   private renderFavoriteStatesOnly() {
     const { favoriteIds } = this.state;
 
-    console.log(favoriteIds);
+    document
+      .querySelectorAll("[data-restaurant-id]")
+      .forEach((item: Element) => {
+        const id = item.getAttribute("data-restaurant-id");
+        const icon = item.querySelector<HTMLImageElement>(
+          ".restaurant__favorite-button img"
+        );
 
-    // document
-    //   .querySelectorAll("[data-restaurant-id]")
-    //   .forEach((item: Element) => {
-    //     const id = item.getAttribute("data-restaurant-id");
-    //     const icon = item.querySelector<HTMLImageElement>(
-    //       ".restaurant__favorite-button img"
-    //     );
-
-    //     if (icon && id) {
-    //       const isFavorite = favoriteIds.includes(id);
-    //       icon.setAttribute(
-    //         "src",
-    //         `./icons/${
-    //           isFavorite
-    //             ? "favorite-icon-filled.png"
-    //             : "favorite-icon-lined.png"
-    //         }`
-    //       );
-    //     }
-    //   });
+        if (icon && id) {
+          const isFavorite = favoriteIds.includes(id);
+          icon.setAttribute(
+            "src",
+            `./icons/${
+              isFavorite
+                ? "favorite-icon-filled.png"
+                : "favorite-icon-lined.png"
+            }`
+          );
+        }
+      });
   }
 }
 

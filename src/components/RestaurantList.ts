@@ -25,23 +25,28 @@ class RestaurantList extends Component<{}, RestaurantListProps> {
         eventType: "click",
         handler: (event: Event) => {
           event.stopPropagation();
-          const $li = (event.target as HTMLElement).closest("li");
           const $modal = document.querySelector("#modal");
-          if (!isHTMLElement($li) || !isHTMLElement($modal)) return;
+          if (!isHTMLElement($modal)) return;
 
-          const id = $li.dataset.id!;
+          const id = this.selectedId(event)!;
           this.props.toggleFavorite(id);
         },
       }
     );
   }
 
-  private selectRestaurant(event: Event) {
+  private selectedId(event: Event): string | undefined {
     const $li = (event.target as HTMLElement).closest("li");
-    const $modal = document.querySelector("#modal");
-    if (!isHTMLElement($li) || !isHTMLElement($modal)) return;
+    if (!isHTMLElement($li)) return;
 
-    const id = $li.dataset.id!;
+    return $li.dataset.id;
+  }
+
+  private selectRestaurant(event: Event) {
+    const $modal = document.querySelector("#modal");
+    if (!isHTMLElement($modal)) return;
+
+    const id = this.selectedId(event)!;
     new RestaurantDetailModal($modal, {
       restaurantId: id,
       restaurants: this.props.restaurants,

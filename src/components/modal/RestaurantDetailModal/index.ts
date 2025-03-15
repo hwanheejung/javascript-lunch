@@ -37,8 +37,9 @@ class RestaurantDetailModal extends Modal<RestaurantDetailModalProps> {
   override contents() {
     const { restaurants, restaurantId } = this.props;
     const data = restaurants.find(({ id }) => id === restaurantId);
+    if (!data) return "";
 
-    const { id, category, name, distance, description, link } = data!;
+    const { id, category, name, distance, description, link } = data;
 
     return /* html */ `
         <div class="restaurant restaurant-detailModal">

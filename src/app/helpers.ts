@@ -1,4 +1,4 @@
-import { Restaurant } from "../entities/restaurant.js";
+import { CategoryKey, Restaurant, SortByKey } from "../entities/restaurant.js";
 import { pipe } from "../utils/pipe.js";
 
 const getFilteredRestaurants = (
@@ -17,22 +17,20 @@ const getSortedRestaurants = (restaurants: Restaurant[], sortBy: string) => {
   });
 };
 
-export const getRestaurants = (instance: any) =>
+export const getRestaurants = (
+  categoryFilter: CategoryKey,
+  sortBy: SortByKey
+) =>
   pipe(
     (restaurants) =>
-      getFilteredRestaurants(
-        restaurants as Restaurant[],
-        instance.state.categoryFilter
-      ),
-    (filteredData) => getSortedRestaurants(filteredData, instance.state.sortBy)
+      getFilteredRestaurants(restaurants as Restaurant[], categoryFilter),
+    (filteredData) => getSortedRestaurants(filteredData, sortBy)
   );
 
 export const getFavoriteRestaurants = (
   restaurants: Restaurant[],
-  currentTab: string,
   favoriteIds: Restaurant["id"][]
 ) => {
-  if (currentTab === "ALL") return restaurants;
   return restaurants.filter((restaurant) =>
     favoriteIds.includes(restaurant.id)
   );
