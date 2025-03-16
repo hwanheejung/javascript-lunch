@@ -1,5 +1,5 @@
 import { pipe } from "@zoeykr/function-al";
-import { CategoryKey, Restaurant, SortByKey } from "../entities";
+import { CategoryType, Restaurant, SortByType } from "../entities";
 import type { AppState } from "./App";
 
 const getFilteredRestaurants = (
@@ -18,7 +18,10 @@ const getSortedRestaurants = (restaurants: Restaurant[], sortBy: string) => {
   });
 };
 
-const getAllRestaurants = (categoryFilter: CategoryKey, sortBy: SortByKey) =>
+const getAllRestaurants = (
+  categoryFilter: CategoryType | "ALL",
+  sortBy: SortByType
+) =>
   pipe(
     (restaurants) =>
       getFilteredRestaurants(restaurants as Restaurant[], categoryFilter),

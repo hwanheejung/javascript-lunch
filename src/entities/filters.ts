@@ -1,12 +1,12 @@
-export type CategoryKey =
-  | "ALL"
+export type CategoryType =
   | "KOREAN"
   | "CHINESE"
   | "JAPANESE"
   | "WESTERN"
   | "ASIAN"
   | "ETC";
-export const CATEGORY: Record<CategoryKey, string> = {
+
+export const CATEGORY_META: Record<CategoryType | "ALL", string> = {
   ALL: "전체",
   KOREAN: "한식",
   CHINESE: "중식",
@@ -16,8 +16,8 @@ export const CATEGORY: Record<CategoryKey, string> = {
   ETC: "기타",
 } as const;
 
-export type SortByKey = "NAME" | "DISTANCE";
-export const SORTBY: Record<SortByKey, string> = {
+export type SortByType = "NAME" | "DISTANCE";
+export const SORTBY: Record<SortByType, string> = {
   NAME: "이름",
   DISTANCE: "거리",
 };

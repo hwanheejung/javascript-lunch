@@ -1,4 +1,4 @@
-import { CategoryKey, Restaurant, SortByKey, TabKey } from "../entities";
+import { CategoryType, Restaurant, SortByType, TabKey } from "../entities";
 import { localStorageStore } from "../storage";
 
 const STORAGE_KEYS = {
@@ -9,8 +9,8 @@ const STORAGE_KEYS = {
 } as const;
 
 type Filters = {
-  category: CategoryKey;
-  sortBy: SortByKey;
+  category: CategoryType | "ALL";
+  sortBy: SortByType;
 };
 
 export const restaurantStorage = {

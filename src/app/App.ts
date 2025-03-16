@@ -5,7 +5,7 @@ import RestaurantList from "../components/RestaurantList.js";
 import { Component } from "../components/core";
 import { AddRestaurantModal } from "../components/modal";
 import { favoriteIds, restaurants } from "../database";
-import { CategoryKey, Restaurant, SortByKey, TabKey } from "../entities";
+import { CategoryType, Restaurant, SortByType, TabKey } from "../entities";
 import { isHTMLElement } from "../utils";
 import {
   handleCategoryFilterChange,
@@ -18,8 +18,8 @@ import { restaurantStorage as storage } from "./restaurantStorage.js";
 export interface AppState extends BaseState {
   restaurants: Restaurant[];
   favoriteIds: Restaurant["id"][];
-  categoryFilter: CategoryKey;
-  sortBy: SortByKey;
+  categoryFilter: CategoryType | "ALL";
+  sortBy: SortByType;
   currentTab: TabKey;
   restaurantListInstance: RestaurantList | null;
 }

@@ -1,13 +1,13 @@
-import { CategoryKey, SortByKey } from "../entities";
+import { CategoryType, SortByType } from "../entities";
 
 export const handleCategoryFilterChange = (instance: any, event: Event) => {
   const selectedValue = (event.target as HTMLSelectElement).value;
-  instance.setState({ categoryFilter: selectedValue as CategoryKey });
+  instance.setState({ categoryFilter: selectedValue as CategoryType });
 };
 
 export const handleSortByFilterChange = (instance: any, event: Event) => {
   const selectedValue = (event.target as HTMLSelectElement).value;
-  instance.setState({ sortBy: selectedValue as SortByKey });
+  instance.setState({ sortBy: selectedValue as SortByType });
 };
 
 export const handleTabChange = (instance: any, event: Event) => {

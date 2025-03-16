@@ -1,4 +1,4 @@
-import { CATEGORY, Restaurant } from "../entities";
+import { CATEGORY_META, Restaurant } from "../entities";
 import throwError from "./throwError.js";
 
 const validateCategory = (category: Restaurant["category"]) => {
@@ -8,8 +8,8 @@ const validateCategory = (category: Restaurant["category"]) => {
   });
 
   throwError({
-    condition: !Object.keys(CATEGORY).includes(category),
-    message: `카테고리는 ${Object.values(CATEGORY).join(
+    condition: !Object.keys(CATEGORY_META).includes(category),
+    message: `카테고리는 ${Object.values(CATEGORY_META).join(
       ", "
     )} 중 하나여야 합니다.`,
   });

@@ -1,7 +1,7 @@
 import { partial } from "@zoeykr/function-al";
-import { CategoryKey, SortByKey } from "../../entities";
+import { CategoryType, SortByType } from "../../entities";
 
-type SelectedKey = CategoryKey | SortByKey;
+type SelectedKey = (CategoryType | "ALL") | SortByType;
 type OptionEntry = [string, string];
 
 interface RenderSelectProps {

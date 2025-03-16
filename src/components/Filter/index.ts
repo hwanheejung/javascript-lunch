@@ -1,8 +1,13 @@
-import { CATEGORY, CategoryKey, SORTBY, SortByKey } from "../../entities";
+import {
+  CATEGORY_META,
+  CategoryType,
+  SORTBY,
+  SortByType,
+} from "../../entities";
 import renderSelect from "./selectRenderer";
 interface FilterProps {
-  selectedCategory: CategoryKey;
-  selectedSortBy: SortByKey;
+  selectedCategory: CategoryType | "ALL";
+  selectedSortBy: SortByType;
 }
 
 const Filter = ({ selectedCategory, selectedSortBy }: FilterProps) => {
@@ -12,7 +17,7 @@ const Filter = ({ selectedCategory, selectedSortBy }: FilterProps) => {
       id: "category-filter",
       action: "set-category-filter",
       testId: "filter-category",
-      entries: Object.entries(CATEGORY),
+      entries: Object.entries(CATEGORY_META),
       selectedKey: selectedCategory,
     })}
     ${renderSelect({
