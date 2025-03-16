@@ -1,4 +1,4 @@
-import { StateType } from "../../types/common.js";
+import { BaseState } from "../../types/common.js";
 import Filter from "../components/Filter";
 import Header from "../components/Header";
 import RestaurantList from "../components/RestaurantList.js";
@@ -14,7 +14,7 @@ import {
 } from "./eventHandlers.js";
 import { getRestaurantsByTab } from "./helpers.js";
 
-export interface AppState extends StateType {
+export interface AppState extends BaseState {
   restaurants: Restaurant[];
   favoriteIds: Restaurant["id"][];
   categoryFilter: CategoryKey;

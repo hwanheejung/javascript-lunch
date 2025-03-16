@@ -1,12 +1,12 @@
-import { PropsType, StateType } from "../../../types/common.js";
+import { BaseProps, BaseState } from "../../../types/common.js";
 import { isHTMLElement } from "../../utils";
 import { Component } from "../core";
 
-interface ModalState extends StateType {
+interface ModalState extends BaseState {
   isOpen: boolean;
 }
 
-abstract class Modal<Props extends PropsType = {}> extends Component<
+abstract class Modal<Props extends BaseProps = {}> extends Component<
   ModalState,
   Props
 > {

@@ -1,8 +1,8 @@
-import { StateType } from "../../../types/common";
+import { BaseState } from "../../../types/common";
 
 export type UIUpdateCallback = () => void;
 
-export class StateStore<State extends StateType> {
+export class StateStore<State extends BaseState> {
   private state: State;
   private watchers: Partial<Record<keyof State, UIUpdateCallback[]>> = {};
 

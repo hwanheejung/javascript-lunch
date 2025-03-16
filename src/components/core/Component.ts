@@ -1,10 +1,10 @@
-import { PropsType, StateType } from "../../../types/common";
+import { BaseProps, BaseState } from "../../../types/common";
 import { StateStore } from "./StateStore";
 import { EventBinding, EventChannel } from "./EventChannel";
 
 abstract class Component<
-  State extends StateType,
-  Props extends PropsType = {}
+  State extends BaseState,
+  Props extends BaseProps = {}
 > {
   protected $target: HTMLElement;
   protected props: Props;

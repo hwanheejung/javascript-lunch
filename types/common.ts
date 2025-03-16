@@ -1,2 +1,2 @@
-export type StateType = Record<string, unknown>;
-export type PropsType = Record<string, unknown>;
+export type BaseState = Record<string, unknown>;
+export type BaseProps = Record<string, unknown>;
