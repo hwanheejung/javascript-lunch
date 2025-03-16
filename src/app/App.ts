@@ -6,13 +6,14 @@ import { Component } from "../components/core";
 import { AddRestaurantModal } from "../components/modal";
 import { favoriteIds, restaurants } from "../database";
 import { CategoryKey, Restaurant, SortByKey, TabKey } from "../entities";
-import { isHTMLElement, storage } from "../utils";
+import { isHTMLElement } from "../utils";
 import {
   handleCategoryFilterChange,
   handleSortByFilterChange,
   handleTabChange,
 } from "./eventHandlers.js";
 import { getRestaurantsByTab } from "./helpers.js";
+import { restaurantStorage as storage } from "./restaurantStorage.js";
 
 export interface AppState extends BaseState {
   restaurants: Restaurant[];
