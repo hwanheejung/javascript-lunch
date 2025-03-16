@@ -1,6 +1,5 @@
+import { DISTANCES } from "../../../entities/restaurant.js";
 import FormFieldContainer from "./FormFieldContainer.js";
-
-export const DISTANCES = [5, 10, 15, 20, 30] as const;
 
 const Distance = () => {
   const contents = /* html */ `

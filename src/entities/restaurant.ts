@@ -1,6 +1,8 @@
 import { CategoryType } from "./filters";
 
-type Distance = 5 | 10 | 15 | 20 | 30;
+export const DISTANCES = [5, 10, 15, 20, 30] as const;
+export type Distance = (typeof DISTANCES)[number];
+
 type UrlString = `http://${string}` | `https://${string}`;
 
 export interface Restaurant {
