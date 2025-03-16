@@ -1,11 +1,11 @@
-import { PropsType } from "../../types/common.js";
+import { BaseProps } from "../../types/common.js";
 import { Restaurant } from "../entities";
 import { isHTMLElement } from "../utils";
 import RestaurantItem from "./RestaurantItem.js";
 import { Component } from "./core";
 import { RestaurantDetailModal } from "./modal";
 
-interface RestaurantListProps extends PropsType {
+interface RestaurantListProps extends BaseProps {
   restaurants: Restaurant[];
   deleteRestaurant: (id: Restaurant["id"]) => void;
   getIsFavorite: (id: Restaurant["id"]) => boolean;

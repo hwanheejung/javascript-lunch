@@ -1,4 +1,4 @@
-import { PropsType } from "../../../../types/common.js";
+import { BaseProps } from "../../../../types/common.js";
 import { Restaurant } from "../../../entities";
 import { isError } from "../../../utils";
 import validateRestaurantForm from "../../../validators/validateRestaurantForm.js";
@@ -9,7 +9,7 @@ import Distance from "./Distance.js";
 import Link from "./Link.js";
 import RestaurantName from "./RestaurantName.js";
 
-interface AddRestaurantModalProps extends PropsType {
+interface AddRestaurantModalProps extends BaseProps {
   submit: (newRestaurant: Restaurant) => void;
 }
 
